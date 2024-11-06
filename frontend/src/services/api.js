@@ -15,3 +15,22 @@ export const fetchPeopleData = async () => {
         throw error;
     }
 };
+
+export const uploadAttedancePhoto = async (photoBase64) => {
+    try {
+        const response = await fetch(`${API_URL}/upload_attendance_picture/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image: photoBase64 }),
+        });
+        if (!response.ok) {
+            throw new Error("Failed to upload photo");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error uploading photo:", error);
+        throw error;
+    }
+};
