@@ -34,12 +34,23 @@ This project is a full-stack web application built with Django (backend) and Rea
     ```
    Follow the prompts to set up an admin username, password, and email.
 
-6. **Run the backend server**:
+6. **Add .env file for AWS token under backend/people**:
+    ```bashexport AWS_ACCESS_KEY_ID=""
+    export AWS_SECRET_ACCESS_KEY=""
+    export AWS_SESSION_TOKEN=""
+
+    ATTENDANCE_PICTURE_BUCKET_NAME="attendance-picture"
+    ```
+
+
+7. **Run the backend server**:
     ```bash
     python manage.py runserver
     ```
 
    The backend should now be running at `http://127.0.0.1:8000`.
+
+
 
 ### 2. Frontend Setup (React)
 

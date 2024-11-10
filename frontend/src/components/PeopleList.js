@@ -31,7 +31,8 @@ const PeopleList = () => {
                 {people.map((person) => (
                     <li key={person.id}>
                         {person.name}
-                        <img src={person.image_url} alt={person.name} />
+                        <br />
+                        <img src={person.image_url} alt={person.name} style={{ width: "100px" }} />
                     </li>
                     
                 ))}
