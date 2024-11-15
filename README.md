@@ -35,7 +35,8 @@ This project is a full-stack web application built with Django (backend) and Rea
    Follow the prompts to set up an admin username, password, and email.
 
 6. **Add .env file for AWS token under backend/people**:
-    ```bashexport AWS_ACCESS_KEY_ID=""
+    ```bash
+	export AWS_ACCESS_KEY_ID=""
     export AWS_SECRET_ACCESS_KEY=""
     export AWS_SESSION_TOKEN=""
 
@@ -75,5 +76,6 @@ This project is a full-stack web application built with Django (backend) and Rea
 
 To configure the API URL for the frontend, create a `.env` file in the `frontend` directory with the following content:
 
-```plaintext
+```bash
 REACT_APP_API_URL=http://127.0.0.1:8000/api
+```
