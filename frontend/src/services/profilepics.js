@@ -8,7 +8,7 @@ import { getTokens } from "./auth";
 import { cognitoConfig } from "../config/cognito";
 
 let s3Client = null;
-let bucketName = process.env.REACT_APP_S3_BUCKET_NAME;
+let profileBucket = process.env.REACT_APP_S3_BUCKET_PROFILE;
 
 const getS3Client = async () => {
 	console.log("Getting S3 client");
@@ -64,7 +64,7 @@ export const createUserFolder = async () => {
 		console.log("User ID:", userId);
 
 		const command = new PutObjectCommand({
-			Bucket: bucketName,
+			Bucket: profileBucket,
 			Key: `${userId}/`, // The trailing slash makes it a folder
 			Body: "", // Empty content
 		});
@@ -83,7 +83,7 @@ export const listUserFiles = async () => {
 		const userId = await getUserId();
 
 		const command = new ListObjectsV2Command({
-			Bucket: bucketName,
+			Bucket: profileBucket,
 			Prefix: `${userId}/`,
 		});
 		console.log("Command:", command);
