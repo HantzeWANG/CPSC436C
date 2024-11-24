@@ -25,7 +25,7 @@ const DashBoard = () => {
 	if (error) return <div>Error: {error}</div>;
 
 	return (
-		<div>
+		<div><div>
 			<h2>Your Files</h2>
 			<table>
 				<thead>
@@ -46,6 +46,17 @@ const DashBoard = () => {
 				</tbody>
 			</table>
 		</div>
+			<div>
+				<h2>take a picture for sign in</h2>
+
+				<button onClick={() => (window.location.href = '/checkin')}>
+					Go to /checkin
+				</button>
+
+
+			</div>
+		</div>
+
 	);
 };
 

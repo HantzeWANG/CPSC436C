@@ -1,6 +1,8 @@
-//const API_URL = "http://127.0.0.1:8000/api";
 // get from .env file
+import { getTokens, refreshTokens } from "./auth";
+import { cognitoConfig } from "../config/cognito";
 const API_URL = process.env.REACT_APP_API_URL;
+
 
 
 export const fetchPeopleData = async () => {
@@ -16,14 +18,31 @@ export const fetchPeopleData = async () => {
     }
 };
 
-export const uploadAttedancePhoto = async (photoBase64) => {
+export const uploadAttedancePhoto = async (photoBase64, userName) => {
+    //await refreshTokens();
+    const { idToken } = getTokens();
+
+	if (!idToken) {
+		throw new Error("No ID token available");
+	}
+
+	console.log("ID Token exists:", !!idToken);
+	console.log("Configuration:", {
+		identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
+		region: cognitoConfig.region,
+		userPoolId: cognitoConfig.userPoolId,
+	});
+
+	const loginKey = `cognito-idp.${cognitoConfig.region}.amazonaws.com/${cognitoConfig.userPoolId}`;
+
     try {
         const response = await fetch(`${API_URL}/upload_attendance_picture/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ image: photoBase64 }),
+            body: JSON.stringify({ image: photoBase64 , idToken: idToken, identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID, 
+                region: cognitoConfig.region, userPoolId: cognitoConfig.userPoolId, userName: userName}),
         });
         if (!response.ok) {
             throw new Error("Failed to upload photo");
@@ -34,3 +53,16 @@ export const uploadAttedancePhoto = async (photoBase64) => {
         throw error;
     }
 };
+
+// if (!s3Client) {
+//     s3Client = new S3Client({
+//         region: cognitoConfig.region,
+//         credentials: fromCognitoIdentityPool({
+//             clientConfig: { region: cognitoConfig.region },
+//             identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
+//             logins: {
+//                 [loginKey]: idToken,
+//             },
+//         }),
+//     });
+// }
