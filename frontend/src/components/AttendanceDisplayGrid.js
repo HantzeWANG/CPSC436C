@@ -1,9 +1,11 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-
+import {useEffect, useState} from "react";
 
 const AttendanceDisplayGrid = () => {
+    const [rows, setRows] = useState([]);
+    const [error, setError] = useState(null);
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         {
@@ -29,13 +31,17 @@ const AttendanceDisplayGrid = () => {
         },
     ];
 
-    // Define rows
-    const rows = [
-        { id: 1, name: 'Alice', userId: 24565, date: 'Dec.18', attendance:"Attended"},
-        { id: 2, name: 'Bob', userId: 123456, date: 'Dec.20', attendance:"Attended"},
-        { id: 3, name: 'Charlie', userId: 456789, date: 'Dec.18', attendance:"Attended"},
-        { id: 4, name: 'David', userId: 281042, date: 'Dec.20',attendance:"Not Attended"},
-    ];
+    useEffect(() => {
+        // Fetch data from the API when the component mounts
+        fetch('http://localhost:3000/attendanceData')
+            .then(response => response.json())
+            .then(data => {
+                setRows(data)
+            })
+            .catch(error => {
+                setError(error);  // Handle errors
+            });
+    }, []);
 
     return (
         <Box sx={{ height: 400, width: '100%' }}>

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'people',
-    
+    'attendance',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +81,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+                'NAME': 'cpsc436c',
+                'USER': 'admin',
+                'PASSWORD': '12345678',
+                'HOST': 'cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com',  # AWS RDS endpoint
+                'PORT': '3306',  # Default MySQL port
     }
 }
 

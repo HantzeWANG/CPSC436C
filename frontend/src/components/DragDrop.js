@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 // TODO: not use uuid
 import { v4 as uuidv4 } from 'uuid';
+import {cognitoConfig} from "../config/cognito";
+import {fromCognitoIdentityPool} from "@aws-sdk/credential-providers";
+import {getTokens} from "../services/auth";
 
 const DragDrop = () => {
     const [image, setImage] = useState(null);
@@ -10,16 +13,20 @@ const DragDrop = () => {
     // TODO: env
     const REGION = 'ca-central-1';
     const BUCKET_NAME = 'pictures-profile';
-    const ACCESS_KEY = 'ASIA3TD2SDFEUB3KV6Y5'; // Use environment variables for sensitive data
-    const SECRET_KEY = 'YrMxh0Q/Okr7Aj7hUTz3G1r5mX0Nmw/HtinQVB/G';
 
+    const { idToken } = getTokens();
+    const loginKey = `cognito-idp.${cognitoConfig.region}.amazonaws.com/${cognitoConfig.userPoolId}`;
     const s3Client = new S3Client({
         region: REGION,
-        credentials: {
-            accessKeyId: ACCESS_KEY,
-            secretAccessKey: SECRET_KEY,
-        },
+        credentials: fromCognitoIdentityPool({
+            clientConfig: { region: cognitoConfig.region },
+            identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
+            logins: {
+                [loginKey]: idToken,
+            },
+        }),
     });
+
 
     const handleDragOver = (event) => {
         event.preventDefault(); // Prevent the default behavior to allow dropping
@@ -30,7 +37,7 @@ const DragDrop = () => {
         event.preventDefault();
         const file = event.dataTransfer.files[0];
         if (file && file.type.startsWith('image/')) {
-            setImage(URL.createObjectURL(file)); // Preview the image locally
+            setImage(URL.createObjectURL(file));
             await uploadToS3(file);
         } else {
             alert('Please drop a valid image file.');

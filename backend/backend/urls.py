@@ -30,6 +30,7 @@ urlpatterns = [
     path('', home), 
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('attendance/', include('attendance.urls')),
     path('api/upload_test/', views.upload_test, name='upload_test'),
     path('api/upload_attendance_picture/', views.upload_attendance_picture, name='upload_attendance_picture'),
 ]
