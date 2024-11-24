@@ -4,6 +4,7 @@ import AuthCallback from "./components/AuthCallback";
 import PeopleList from "./components/PeopleList";
 import { WebcamCapture } from "./components/recordAttendance";
 import DashBoard from "./components/DashBoard";
+
 function App() {
 	return (
 		<Router>
@@ -13,11 +14,11 @@ function App() {
 					<Route path="/callback" element={<AuthCallback />} />
 					<Route path="/dashboard" element={<DashBoard />} />
 					<Route
-						path="/"
+						path="/checkin"
 						element={
 							<div>
-								<h1>Attendance App</h1>
-								<PeopleList />
+								<h1>Take a picture of yourself to check in</h1>							
+								{/* <PeopleList /> */}
 								<WebcamCapture />
 							</div>
 						}
