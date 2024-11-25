@@ -39,14 +39,6 @@ def upload_file(file_name, bucket, object_name=None, client=None):
     if object_name is None:
         object_name = os.path.basename(file_name)
 
-    # Initialize S3 client
-    # s3_client = boto3.client(
-    #     's3',
-    #     aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-    #     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    #     aws_session_token=os.getenv("AWS_SESSION_TOKEN")
-    # )
-
     try:
         # Upload the file to S3
         print(f"Uploading file {file_name} to bucket {bucket} with object name {object_name}")
@@ -74,26 +66,6 @@ def get_user_id(id_token):
     # Parse the JSON payload and extract 'sub'
     payload = json.loads(payload_decoded)
     return payload.get("sub")
-
-@api_view(['POST'])
-def upload_test(request):
-    """
-    API view to test file upload to S3.
-    """
-    file = request.FILES.get('file')
-    if not file:
-        return Response({"error": "No file provided"}, status=400)
-
-    # Use 'attendance/' as the folder for testing, you can change this path as needed
-    object_name = f"attendance/{file.name}"
-
-    # Call the upload_file function
-    file_url = upload_file(file_name=object_name, bucket=os.getenv("ATTENDANCE_PICTURE_BUCKET_NAME"), object_name=object_name)
-
-    if file_url:
-        return Response({"file_url": file_url}, status=200)
-    else:
-        return Response({"error": "Failed to upload file"}, status=500)
 
 # store and upload the attendance picture to s3, then delete the file 
 @api_view(['POST'])
