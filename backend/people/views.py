@@ -3,8 +3,8 @@ import datetime
 import time
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import PeopleSerializer
-from .models import People
+from .serializers import AttendanceSerializer, UserSerializer
+from .models import attendance, user
 import boto3
 import re
 import os
@@ -18,8 +18,8 @@ from dotenv import load_dotenv
 import uuid
 
 class PeopleView(viewsets.ModelViewSet):
-    serializer_class = PeopleSerializer
-    queryset = People.objects.all()
+    serializer_class = AttendanceSerializer, UserSerializer
+    queryset = attendance.objects.all()
 
 
 # load variables from .env file
