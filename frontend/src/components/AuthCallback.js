@@ -13,7 +13,7 @@ const AuthCallback = () => {
 			if (code) {
 				try {
 					await handleAuthCallback(code);
-					navigate("/dashboard");
+					navigate("/welcome");
 				} catch (error) {
 					console.error("Auth callback error:", error);
 					navigate("/login");

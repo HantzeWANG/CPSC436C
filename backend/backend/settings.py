@@ -36,11 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',  
+    'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
     'people',
-    
+    'attendance',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cpsc436c-project',
+        'USER': 'admin',
+        'PASSWORD': '12345678',
+        'HOST': 'cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com',
+        'PORT': '3306',
     }
 }
 
@@ -128,5 +132,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+    'http://localhost:3000'
 ]
