@@ -2,10 +2,22 @@ from django.db import models
 
 # Create your models here.
 
-class People(models.Model):
-    name = models.CharField(max_length=120)
-    id = models.IntegerField(primary_key=True)
-    image_url = models.CharField(max_length=2083)
 
-    def _str_(self):
-        return self.id
+class Profile(models.Model):
+    profile_id = models.CharField(max_length=100, primary_key=True)
+    profile_name = models.CharField(max_length=100)
+    profile_image = models.CharField(max_length=100)
+    admin_id = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.profile_id
+
+
+class Attendance(models.Model):
+    attendance_id = models.CharField(max_length=100, primary_key=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    photo_url = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.attendance_id

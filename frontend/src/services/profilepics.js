@@ -11,19 +11,11 @@ let s3Client = null;
 let profileBucket = process.env.REACT_APP_S3_BUCKET_PROFILE;
 
 const getS3Client = async () => {
-	console.log("Getting S3 client");
 	const { idToken } = getTokens();
 
 	if (!idToken) {
 		throw new Error("No ID token available");
 	}
-
-	console.log("ID Token exists:", !!idToken);
-	console.log("Configuration:", {
-		identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
-		region: cognitoConfig.region,
-		userPoolId: cognitoConfig.userPoolId,
-	});
 
 	const loginKey = `cognito-idp.${cognitoConfig.region}.amazonaws.com/${cognitoConfig.userPoolId}`;
 
@@ -43,11 +35,6 @@ const getS3Client = async () => {
 	try {
 		// Force credentials refresh to verify they're working
 		const credentials = await s3Client.config.credentials();
-		console.log("Credentials received:", {
-			hasAccessKeyId: !!credentials.accessKeyId,
-			hasSecretAccessKey: !!credentials.secretAccessKey,
-			hasSessionToken: !!credentials.sessionToken,
-		});
 	} catch (error) {
 		console.error("Error getting credentials:", error);
 		throw error;
@@ -56,12 +43,16 @@ const getS3Client = async () => {
 	return s3Client;
 };
 
+const getUserId = async () => {
+	const { idToken } = getTokens();
+	const payload = JSON.parse(atob(idToken.split(".")[1]));
+	return payload.sub; // Cognito user ID
+};
+
 export const createUserFolder = async () => {
 	try {
 		const client = await getS3Client();
 		const userId = await getUserId();
-
-		console.log("User ID:", userId);
 
 		const command = new PutObjectCommand({
 			Bucket: profileBucket,
@@ -77,7 +68,7 @@ export const createUserFolder = async () => {
 	}
 };
 
-export const listUserFiles = async () => {
+export const listProfiles = async () => {
 	try {
 		const client = await getS3Client();
 		const userId = await getUserId();
@@ -86,11 +77,8 @@ export const listUserFiles = async () => {
 			Bucket: profileBucket,
 			Prefix: `${userId}/`,
 		});
-		console.log("Command:", command);
 
 		const response = await client.send(command);
-
-		console.log("Response:", response);
 
 		// If no Contents array or it's empty, create the folder
 		if (!response.Contents || response.Contents.length === 0) {
@@ -106,8 +94,27 @@ export const listUserFiles = async () => {
 	}
 };
 
-const getUserId = async () => {
-	const { idToken } = getTokens();
-	const payload = JSON.parse(atob(idToken.split(".")[1]));
-	return payload.sub; // Cognito user ID
+export const uploadProfilePicture = async (file, profileId) => {
+	try {
+		const client = await getS3Client();
+		const userId = await getUserId();
+
+		const fileExtension = file.name.split(".").pop().toLowerCase();
+
+		const command = new PutObjectCommand({
+			Bucket: profileBucket,
+			Key: `${userId}/${profileId}.${fileExtension}`,
+			Body: file,
+			ContentType: file.type,
+		});
+
+		await client.send(command);
+
+		// Construct the S3 URL for the uploaded image
+		const imageUrl = `https://${profileBucket}.s3.${cognitoConfig.region}.amazonaws.com/${userId}/${profileId}.${fileExtension}`;
+		return imageUrl;
+	} catch (error) {
+		console.error("Error uploading profile picture:", error);
+		throw error;
+	}
 };
