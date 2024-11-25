@@ -49,8 +49,8 @@ const DashBoard = () => {
 			<div>
 				<h2>take a picture for sign in</h2>
 
-				<button onClick={() => (window.location.href = '/checkin')}>
-					Go to /checkin
+				<button onClick={() => (window.location.href = '/')}>
+					Go for checkin
 				</button>
 
 

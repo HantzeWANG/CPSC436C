@@ -31,7 +31,7 @@ export const WebcamCapture = () => {
   return (
     <>
       <div>
-        <p>Please enter your name:</p>
+        <p>Please enter your userID:</p>
         <TextField
           required
           id="outlined-required"
