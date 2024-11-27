@@ -5,7 +5,7 @@ from .models import Attendance, Profile
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
-        fields = ('attendance_id', 'profile_id', 'photo_url', 'timestamp')
+        fields = ('profile', 'photo_url', 'timestamp')
 
 
 class ProfileSerializer(serializers.ModelSerializer):
