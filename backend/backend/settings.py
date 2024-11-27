@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import pymysql
+pymysql.install_as_MySQLdb()
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -80,12 +81,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': 'cpsc436c',
+        'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'cpsc436c-project',
                 'USER': 'admin',
                 'PASSWORD': '12345678',
                 'HOST': 'cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com',  # AWS RDS endpoint
-                'PORT': '3306',  # Default MySQL port
+                'PORT': '3306',
     }
 }
 

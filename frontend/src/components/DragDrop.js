@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-// TODO: not use uuid
-import { v4 as uuidv4 } from 'uuid';
 import {cognitoConfig} from "../config/cognito";
 import {fromCognitoIdentityPool} from "@aws-sdk/credential-providers";
 import {getTokens} from "../services/auth";
+import {TextField} from "@mui/material";
 
+// TODO: maxlength, show icon/message for upload status
 const DragDrop = () => {
+    const [userId, setUserId] = useState(null);
     const [image, setImage] = useState(null);
+    const [error, setError] = useState(false);
     const [uploadStatus, setUploadStatus] = useState('');
+    const [helperText, setHelperText] = useState('');
 
-    // TODO: env
-    const REGION = 'ca-central-1';
+    // const REGION = 'ca-central-1';
     const BUCKET_NAME = 'pictures-profile';
 
     const { idToken } = getTokens();
     const loginKey = `cognito-idp.${cognitoConfig.region}.amazonaws.com/${cognitoConfig.userPoolId}`;
     const s3Client = new S3Client({
-        region: REGION,
+        region: cognitoConfig.region,
         credentials: fromCognitoIdentityPool({
             clientConfig: { region: cognitoConfig.region },
             identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
@@ -38,7 +40,9 @@ const DragDrop = () => {
         const file = event.dataTransfer.files[0];
         if (file && file.type.startsWith('image/')) {
             setImage(URL.createObjectURL(file));
-            await uploadToS3(file);
+            if (userId != null && userId.length > 0) {
+                await uploadToS3(file);
+            }
         } else {
             alert('Please drop a valid image file.');
         }
@@ -46,12 +50,9 @@ const DragDrop = () => {
 
     const uploadToS3 = async (file) => {
         try {
-            // Generate a unique key for the image (ID)
-            const uniqueID = uuidv4(); // Generate a UUID as the key
-
             const uploadParams = {
                 Bucket: BUCKET_NAME,
-                Key: `${uniqueID}`, // Use the unique ID as the key for the S3 object
+                Key: `${userId}`, // Use the unique ID as the key for the S3 object
                 Body: file,
                 ContentType: file.type,
             };
@@ -77,8 +78,35 @@ const DragDrop = () => {
         }
     };
 
+    const handleUserIdChange = (event) => {
+        const inputValue = event.target.value;
+        setUserId(inputValue)
+        validateInput(inputValue);
+    };
+
+    const validateInput = (input) => {
+        const regex = /^[a-zA-Z0-9]*$/;
+
+        if (!regex.test(input)) {
+            setError(true);
+            setHelperText('Only alphabets and numbers are allowed');
+        } else {
+            setError(false);
+            setHelperText('');
+        }
+    };
+
     return (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <TextField
+                label="Enter Text"
+                variant="outlined"
+                value={userId}
+                onChange={handleUserIdChange}
+                error={error}
+                helperText={helperText}
+                fullWidth
+            />
             <div
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
