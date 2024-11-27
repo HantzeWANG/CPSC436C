@@ -3,6 +3,8 @@ import { listProfiles } from "../services/profilepics";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
+import Modal from "@mui/material/Modal";
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 const DashBoard = () => {
@@ -10,20 +12,29 @@ const DashBoard = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [showAddModal, setShowAddModal] = useState(false);
+	const [previewImageUrl, setPreviewImageUrl] = useState(null);
 
 	const columns = [
-		{ 	field: "profile_id", 
-			headerName: "ID", 
-			width: 120 },
-		{
-			field: "profile_name",
-			headerName: "Name",
-			width: 150,
-		},
+		{ field: "profile_id", headerName: "ID", width: 120 },
+		{ field: "profile_name", headerName: "Name", width: 150 },
 		{
 			field: "profile_image",
-			headerName: "profile_image",
+			headerName: "Profile Image",
 			width: 200,
+			renderCell: (params) => (
+				<button
+					onClick={() => setPreviewImageUrl(params.value)}
+					style={{
+						background: "none",
+						border: "none",
+						color: "#007bff",
+						cursor: "pointer",
+						textDecoration: "underline",
+					}}
+				>
+					Preview Image
+				</button>
+			),
 		},
 	];
 
@@ -104,7 +115,23 @@ const DashBoard = () => {
 			</Box>
 			{showAddModal && (
 				<AddProfileModal onClose={() => setShowAddModal(false)} />
-			)}
+				)}
+			<Modal open={!!previewImageUrl} onClose={() => setPreviewImageUrl(null)}>
+				<Box
+					sx={{
+						position: "absolute",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						width: 400,
+						bgcolor: "background.paper",
+						boxShadow: 24,
+						p: 4,
+					}}
+				>
+					<img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
+				</Box>
+			</Modal>
 		</div>
 	);
 };
