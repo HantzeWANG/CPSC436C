@@ -23,13 +23,18 @@ from django.http import HttpResponse
 router = routers.DefaultRouter()
 router.register(r'People', views.PeopleView, 'people')
 
+
 def home(request):
     return HttpResponse("Welcome to the Attendance App API")
 
+
 urlpatterns = [
-    path('', home), 
+    path('', home),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     # path('attendance/', include('attendance.urls')),
-    path('api/upload_attendance_picture/', views.upload_attendance_picture, name='upload_attendance_picture'),
+    path('api/upload_attendance_picture/',
+         views.upload_attendance_picture, name='upload_attendance_picture'),
+    path('api/create_profile/', views.create_profile, name='create_profile'),
+     path('api/upload_attendance_picture/', views.upload_attendance_picture, name='upload_attendance_picture'),
 ]

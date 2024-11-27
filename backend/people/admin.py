@@ -1,12 +1,15 @@
 from django.contrib import admin
-from .models import attendance, user
+from .models import Attendance, Profile
 
 # Admin class for the Attendance model
-@admin.register(attendance)
-class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('attendance_id', 'user_id', 'photo_url', 'timestamp')  # Correct fields from the attendance model
 
-# Admin class for the User model
-@admin.register(user)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'username', 'email', 'profileImage', 'admin_id')  # Correct fields from the user model
+
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'photo_url', 'timestamp')
+
+# Admin class for the Profile model
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('profile_id', 'profile_name', 'profile_image', 'admin_id')

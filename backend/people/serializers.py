@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from .models import attendance, user
+from .models import Attendance, Profile
+
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = attendance
-        fields = ('attendance_id', 'user_id', 'photo_url', 'timestamp')
+        model = Attendance
+        fields = ('profile', 'photo_url', 'timestamp')
 
 
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = user
-        fields = ('user_id', 'username', 'email', 'profileImage', 'admin_id')
-                  
+        model = Profile
+        fields = ('profile_id', 'profile_name', 'profile_image', 'admin_id')
