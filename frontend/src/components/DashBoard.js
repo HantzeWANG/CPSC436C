@@ -3,6 +3,7 @@ import { listProfiles } from "../services/profilepics";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const DashBoard = () => {
 	const [files, setFiles] = useState([]);
@@ -11,21 +12,18 @@ const DashBoard = () => {
 	const [showAddModal, setShowAddModal] = useState(false);
 
 	const columns = [
-		{ field: "id", headerName: "ID", width: 90 },
+		{ 	field: "profile_id", 
+			headerName: "ID", 
+			width: 120 },
 		{
-			field: "name",
+			field: "profile_name",
 			headerName: "Name",
 			width: 150,
 		},
 		{
-			field: "lastModified",
-			headerName: "Last Modified",
+			field: "profile_image",
+			headerName: "profile_image",
 			width: 200,
-		},
-		{
-			field: "size",
-			headerName: "Size (KB)",
-			width: 110,
 		},
 	];
 
@@ -33,11 +31,21 @@ const DashBoard = () => {
 		const loadFiles = async () => {
 			try {
 				const fileList = await listProfiles();
-				const formattedFiles = fileList.map((file, index) => ({
-					id: index + 1,
-					name: file.Key.split("/").pop(),
-					lastModified: new Date(file.LastModified).toLocaleString(),
-					size: Math.round(file.Size / 1024),
+				const formattedFiles = await Promise.all(fileList.map(async (file, index) => {
+					const profile_id = file.Key.split("/").pop().split(".").slice(0, -1).join(".");
+					
+					// Fetch profile data from the endpoint
+					const response = await fetch(`${API_URL}/profiles/${profile_id}/`);
+					console.log(response)
+					const profileData = await response.json();
+					console.log(profileData[0])
+
+					return {
+						id: index + 1,
+						profile_id: profile_id,
+						profile_name: profileData[0].profile_name,
+						profile_image: profileData[0].profile_image,
+					};
 				}));
 				setFiles(formattedFiles);
 			} catch (err) {
@@ -62,7 +70,7 @@ const DashBoard = () => {
 					alignItems: "center",
 				}}
 			>
-				<h2>DashBoard</h2>
+				<h2>Dashboard</h2>
 				<button
 					onClick={() => setShowAddModal(true)}
 					style={{
