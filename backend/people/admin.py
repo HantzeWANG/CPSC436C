@@ -6,13 +6,11 @@ from .models import Attendance, Profile
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    # Correct fields from the attendance model
-    list_display = ('attendance_id', 'profile_id', 'photo_url', 'timestamp')
+    list_display = ('profile', 'photo_url', 'timestamp')
 
 # Admin class for the Profile model
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    # Correct fields from the profile model
     list_display = ('profile_id', 'profile_name', 'profile_image', 'admin_id')

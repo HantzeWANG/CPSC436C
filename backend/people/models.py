@@ -14,10 +14,10 @@ class Profile(models.Model):
 
 
 class Attendance(models.Model):
-    attendance_id = models.CharField(max_length=100, primary_key=True)
+    id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     photo_url = models.CharField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.attendance_id
+        return str(self.id)

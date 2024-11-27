@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const TouchIDVerification = () => {
 	const [isSupported, setIsSupported] = useState(false);
-	const [isVerified, setIsVerified] = useState(false);
+	const [, setIsVerified] = useState(false);
 	const [error, setError] = useState("");
 	const [isRegistered, setIsRegistered] = useState(false);
 	const navigate = useNavigate();
