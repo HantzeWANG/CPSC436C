@@ -37,5 +37,6 @@ urlpatterns = [
          views.upload_attendance_picture, name='upload_attendance_picture'),
     path('api/create_profile/', views.create_profile, name='create_profile'),
     path('api/profiles/<profile_id>/', views.get_profiles, name='get_profiles'),
-    path('api/update_profile/', views.update_profile, name='update_profile')
+    path('api/update_profile/', views.update_profile, name='update_profile'),
+    path('api/profiles_by_admin/<admin_id>/', views.get_profile_by_admin, name='get_profile_by_admin'),
 ]

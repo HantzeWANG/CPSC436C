@@ -58,19 +58,6 @@ export const uploadAttedancePhoto = async (photoBase64, profileID) => {
 	}
 };
 
-// if (!s3Client) {
-//     s3Client = new S3Client({
-//         region: cognitoConfig.region,
-//         credentials: fromCognitoIdentityPool({
-//             clientConfig: { region: cognitoConfig.region },
-//             identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
-//             logins: {
-//                 [loginKey]: idToken,
-//             },
-//         }),
-//     });
-// }
-
 export const createProfile = async (profileData) => {
 	try {
 		const response = await fetch(`${API_URL}/create_profile/`, {
@@ -80,8 +67,6 @@ export const createProfile = async (profileData) => {
 			},
 			body: JSON.stringify(profileData),
 		});
-
-        console.log("profileData: " + JSON.stringify(profileData))
 
 		if (!response.ok) {
 			throw new Error("Failed to create profile");
