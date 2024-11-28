@@ -160,3 +160,15 @@ def get_attendance(request):
     serializer = AttendanceSerializer(attendances, many=True)
     return Response(serializer.data, status=200)
 
+@api_view(['POST'])
+def update_profile(request):
+    try:
+        body = json.loads(request.body)
+        profile = Profile.objects.get(profile_id=body['profileID'])
+        profile.profile_name = body['profileName']
+        profile.profile_image = body['profileImageUrl']
+        profile.save()
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

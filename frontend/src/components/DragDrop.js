@@ -121,8 +121,8 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				onDrop={handleDrop}
 				onClick={() => document.getElementById("fileInput").click()}
 				style={{
-					width: "300px",
-					height: "200px",
+					width: "240px",
+					height: "160px",
 					border: `2px dashed ${isDragging ? "#007bff" : "#ccc"}`,
 					borderRadius: "10px",
 					margin: "auto",

@@ -100,10 +100,11 @@ export const uploadProfilePicture = async (file, profileId) => {
 		const userId = await getUserId();
 
 		const fileExtension = file.name.split(".").pop().toLowerCase();
+		const timestamp = new Date().toISOString().replace(/[:\-T]/g, '').split('.')[0]; // Format: YYYYMMDDHHMMSS
 
 		const command = new PutObjectCommand({
 			Bucket: profileBucket,
-			Key: `${userId}/${profileId}.${fileExtension}`,
+			Key: `${userId}/${profileId}_${timestamp}.${fileExtension}`,
 			Body: file,
 			ContentType: file.type,
 		});
@@ -111,7 +112,7 @@ export const uploadProfilePicture = async (file, profileId) => {
 		await client.send(command);
 
 		// Construct the S3 URL for the uploaded image
-		const imageUrl = `https://${profileBucket}.s3.${cognitoConfig.region}.amazonaws.com/${userId}/${profileId}.${fileExtension}`;
+		const imageUrl = `https://${profileBucket}.s3.${cognitoConfig.region}.amazonaws.com/${userId}/${profileId}_${timestamp}.${fileExtension}`;
 		console.log(`Uploaded profile picture: ${imageUrl}`);
 		return imageUrl;
 	} catch (error) {
