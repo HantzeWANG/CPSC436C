@@ -1,5 +1,4 @@
 import './App.css';
-import PeopleList from './components/PeopleList';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import AttendanceDisplayGrid from "./components/AttendanceDisplayGrid";
 import {
@@ -11,14 +10,12 @@ import {
 import "./App.css";
 import Login from "./components/Login";
 import AuthCallback from "./components/AuthCallback";
-import PeopleList from "./components/PeopleList";
 import { WebcamCapture } from "./components/recordAttendance";
 import DashBoard from "./components/DashBoard";
 import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDVerification from "./components/TouchIDVerification";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 
 const theme = createTheme();
@@ -76,9 +73,7 @@ function App() {
 						/>
 
 						<Route PATH="/detailedAttendance" element={
-							<ProtectedRoute>
 							<AttendanceDisplayGrid />
-							</ProtectedRoute>
 						}
 						/>
 

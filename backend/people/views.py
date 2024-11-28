@@ -157,6 +157,6 @@ def get_profiles(request, profile_id):
 @api_view(['GET'])
 def get_attendance(request):
     attendances = Attendance.objects.all()
-    serializer = AttendanceSerializer(attendance, many=True)
-    return Response(serializer.data)
+    serializer = AttendanceSerializer(attendances, many=True)
+    return Response(serializer.data, status=200)
 

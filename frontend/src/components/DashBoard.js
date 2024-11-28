@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
 import Modal from "@mui/material/Modal";
+import {useNavigate} from "react-router-dom";
+import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,6 +15,12 @@ const DashBoard = () => {
 	const [error, setError] = useState(null);
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [previewImageUrl, setPreviewImageUrl] = useState(null);
+
+	const navigate = useNavigate(); // Hook to handle navigation
+
+	const handleNavigate = () => {
+		navigate('/detailed-attendance'); // Navigate to the DetailedAttendance page
+	};
 
 	const columns = [
 		{ field: "profile_id", headerName: "ID", width: 120 },
@@ -82,6 +90,7 @@ const DashBoard = () => {
 				}}
 			>
 				<h2>Dashboard</h2>
+				<button onClick={handleNavigate}>Go to Detailed Attendance</button>
 				<button
 					onClick={() => setShowAddModal(true)}
 					style={{
@@ -132,6 +141,7 @@ const DashBoard = () => {
 					<img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
 				</Box>
 			</Modal>
+			<AttendanceDisplayGrid></AttendanceDisplayGrid>
 		</div>
 	);
 };
