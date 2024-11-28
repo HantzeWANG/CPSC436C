@@ -5,6 +5,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
 import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
+import {useNavigate} from "react-router-dom";
+import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -74,7 +76,7 @@ const DashBoard = () => {
 		const loadFiles = async () => {
 			try {
 				const fileList = await listProfiles();
-	
+
 				// Step 1: Deduplicate fileList by profile_id
 				const uniqueFiles = fileList.reduce((acc, file) => {
 					const profile_id = file.Key.split("/")
@@ -85,20 +87,20 @@ const DashBoard = () => {
 						.split("_")
 						.slice(0, -1)
 						.join("_");
-	
+
 					if (!acc.has(profile_id)) {
 						acc.set(profile_id, file);
 					}
-	
+
 					return acc;
 				}, new Map());
-	
+
 				// Step 2: Fetch profile data for unique profile_ids
 				const formattedFiles = await Promise.all(
 					Array.from(uniqueFiles.entries()).map(async ([profile_id, file], index) => {
 						const response = await fetch(`${API_URL}/profiles/${profile_id}/`);
 						const profileData = await response.json();
-	
+
 						return {
 							id: index + 1,
 							profile_id: profile_id,
@@ -107,7 +109,7 @@ const DashBoard = () => {
 						};
 					})
 				);
-	
+
 				// Step 3: Update state with unique profiles
 				setFiles(formattedFiles);
 			} catch (err) {
@@ -116,10 +118,10 @@ const DashBoard = () => {
 				setLoading(false);
 			}
 		};
-	
+
 		loadFiles();
 	}, []);
-	
+
 
     if (loading) return <div>Loading files...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -206,6 +208,7 @@ const DashBoard = () => {
                     <img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
                 </Box>
             </Modal>
+			<AttendanceDisplayGrid></AttendanceDisplayGrid>
         </div>
     );
 };

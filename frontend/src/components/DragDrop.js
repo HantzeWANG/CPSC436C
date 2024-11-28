@@ -3,12 +3,16 @@ import { uploadProfilePicture } from "../services/profilepics";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import {TextField} from "@mui/material";
 
 const DragDrop = ({ profileID, onUploadSuccess }) => {
+	const [userId, setUserId] = useState(null);
 	const [image, setImage] = useState(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadStatus, setUploadStatus] = useState({ type: "", message: "" });
 	const [isDragging, setIsDragging] = useState(false);
+	const [error, setError] = useState(false);
+	const [helperText, setHelperText] = useState('');
 
 	const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -79,6 +83,24 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 		const file = event.target.files[0];
 		if (file) {
 			await handleFileProcess(file);
+		}
+	};
+
+	const handleUserIdChange = (event) => {
+		const inputValue = event.target.value;
+		setUserId(inputValue)
+		validateInput(inputValue);
+	};
+
+	const validateInput = (input) => {
+		const regex = /^[a-zA-Z0-9]*$/;
+
+		if (!regex.test(input)) {
+			setError(true);
+			setHelperText('Only alphabets and numbers are allowed');
+		} else {
+			setError(false);
+			setHelperText('');
 		}
 	};
 

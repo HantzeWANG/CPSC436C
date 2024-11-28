@@ -10,7 +10,6 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 # Admin class for the Profile model
 
-
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('profile_id', 'profile_name', 'profile_image', 'admin_id')

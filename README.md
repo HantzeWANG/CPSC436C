@@ -11,32 +11,60 @@ This project is a full-stack web application built with Django (backend) and Rea
     ```bash
     cd backend
     ```
+2. **Install mysql and mysqlclient**:
+    ```
+   brew install mysql@8.4 
+   ```
+   ```
+   echo 'export PATH="/usr/local/opt/mysql@8.4/bin:$PATH"' >> ~/.zshrc
+   source  ~/.zshrc
+   ```
 
-2. **Create and activate a virtual environment**:
+   Download mysql client through: 
+   https://pypi.org/project/mysqlclient/
+
+   Test connection (2 approaches)
+   ```
+   mysql -u admin -p -h cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com 
+   ```
+
+   ```
+    source env/bin/activate
+   
+    from django.db import connections
+    from django.db.utils import OperationalError
+    try:
+      connection = connections['default']
+      connection.ensure_connection()  
+      print("Database connection successful!")
+    except OperationalError as e:
+      print(f"Database connection failed: {e}")
+   ```
+3. **Create and activate a virtual environment**:
     ```bash
     python -m venv env
     source env/bin/activate  # Mac
     ```
-
-3. **Install dependencies**:
+4. 
+5. **Install dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
 
-4. **Apply database migrations**:
+6. **Apply database migrations**:
     ```bash
     python manage.py migrate
     ```
 
-5. **Create a superuser for Django admin**:
+7. **Create a superuser for Django admin**:
     ```bash
     python manage.py createsuperuser
     ```
    Follow the prompts to set up an admin username, password, and email.
 
-6. **Add .env file for AWS token under backend/people**:
+8. **Add .env file for AWS token under backend/people**:
     ```bash
-	export AWS_ACCESS_KEY_ID=""
+    export AWS_ACCESS_KEY_ID=""
     export AWS_SECRET_ACCESS_KEY=""
     export AWS_SESSION_TOKEN=""
 

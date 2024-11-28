@@ -1,0 +1,61 @@
+/* Base styles for the side nav */
+.sidenav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+    color: white;
+    z-index: 1000;
+}
+
+/* When the side nav is open */
+.sidenav.open {
+    transform: translateX(0);
+}
+
+/* Navigation links */
+.sidenav nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidenav nav ul li {
+    padding: 16px;
+    text-align: left;
+}
+
+.sidenav nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.sidenav nav ul li a:hover {
+    background-color: #575757;
+    display: block;
+    border-radius: 4px;
+}
+
+/* Toggle button */
+.toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: -50px;
+    background-color: #111;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background-color: #575757;
+}

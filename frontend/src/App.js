@@ -1,3 +1,6 @@
+import './App.css';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import AttendanceDisplayGrid from "./components/AttendanceDisplayGrid";
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -9,13 +12,13 @@ import Login from "./components/Login";
 import AuthCallback from "./components/AuthCallback";
 import { WebcamCapture } from "./components/recordAttendance";
 import DashBoard from "./components/DashBoard";
+import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDVerification from "./components/TouchIDVerification";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+
 
 const theme = createTheme();
-
 function App() {
 	return (
 		<ThemeProvider theme={theme}>
@@ -62,6 +65,16 @@ function App() {
 									<DashBoard />
 								</ProtectedRoute>
 							}
+						/>
+						<Route path="/profilepic" element={
+							<ProtectedRoute>
+							<DragDrop />
+							</ProtectedRoute>}
+						/>
+
+						<Route PATH="/detailedAttendance" element={
+							<AttendanceDisplayGrid />
+						}
 						/>
 
 						{/* Redirect root to login */}
