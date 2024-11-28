@@ -81,6 +81,8 @@ export const createProfile = async (profileData) => {
 			body: JSON.stringify(profileData),
 		});
 
+        console.log("profileData: " + JSON.stringify(profileData))
+
 		if (!response.ok) {
 			throw new Error("Failed to create profile");
 		}
