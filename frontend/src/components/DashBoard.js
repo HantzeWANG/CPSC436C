@@ -6,10 +6,14 @@ import AddProfileModal from "./AddProfileModal";
 import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
 import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
+import HomeIcon from '@mui/icons-material/Home';
+import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const DashBoard = () => {
+    const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -108,16 +112,46 @@ const DashBoard = () => {
     if (loading) return <div>Loading files...</div>;
     if (error) return <div>Error: {error}</div>;
 
+    const handleGoBackHomePage = () => {
+        navigate("/welcome");
+    };
+
     return (
         <div>
+            <div
+                style={{
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                }}
+            >
+                <Button
+                    variant="text"
+                    startIcon={<HomeIcon style={{ fontSize: 20 }} />}
+                    onClick={handleGoBackHomePage}
+                    style={{ fontSize: '0.8rem', padding: '5px 10px' }}
+                >
+                    Home
+                </Button>
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: "20px",
+                }}
+            >
+                <h2>Dashboard</h2>
+            </div>
             <div
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginBottom: "20px",
                 }}
             >
-                <h2>Dashboard</h2>
                 <button
                     onClick={() => setShowAddModal(true)}
                     style={{
