@@ -42,8 +42,7 @@ def upload_file(file_name, bucket, object_name=None, client=None):
 
     try:
         # Upload the file to S3
-        print(f"Uploading file {file_name} to bucket {
-              bucket} with object name {object_name}")
+        print(f"Uploading file {file_name} to bucket {bucket} with object name {object_name}")
         client.upload_file(file_name, bucket, object_name)
         file_url = f"https://{bucket}.s3.amazonaws.com/{object_name}"
         print(f"File uploaded successfully to {file_url}")
@@ -144,3 +143,10 @@ def create_profile(request):
         return Response(serializer.data, status=201)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+
+@api_view(['GET'])
+def get_attendance(request):
+    attendances = Attendance.objects.all()
+    serializer = AttendanceSerializer(attendance, many=True)
+    return Response(serializer.data)
+

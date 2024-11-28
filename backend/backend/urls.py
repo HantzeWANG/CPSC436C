@@ -32,7 +32,7 @@ urlpatterns = [
     path('', home),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    # path('attendance/', include('attendance.urls')),
+    path('api/attendance/', views.get_attendance, name="get_attendance"),
     path('api/upload_attendance_picture/',
          views.upload_attendance_picture, name='upload_attendance_picture'),
     path('api/create_profile/', views.create_profile, name='create_profile'),
