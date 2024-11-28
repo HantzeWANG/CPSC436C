@@ -16,7 +16,7 @@ class Profile(models.Model):
 class Attendance(models.Model):
     id = models.AutoField(primary_key=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
-    photo_url = models.CharField(max_length=100)
+    photo_url = models.CharField(max_length=1000)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
