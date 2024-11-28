@@ -144,3 +144,26 @@ def create_profile(request):
         return Response(serializer.data, status=201)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+
+@api_view(['GET'])
+# get all profiles for a user from mysql
+def get_profiles(request, profile_id):
+    try:
+        profiles = Profile.objects.filter(profile_id=profile_id)
+        serializer = ProfileSerializer(profiles, many=True)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(['POST'])
+def update_profile(request):
+    try:
+        body = json.loads(request.body)
+        profile = Profile.objects.get(profile_id=body['profileID'])
+        profile.profile_name = body['profileName']
+        profile.profile_image = body['profileImageUrl']
+        profile.save()
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

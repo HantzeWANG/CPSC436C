@@ -44,11 +44,13 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				try {
 					setIsUploading(true);
 					const s3Url = await uploadProfilePicture(file, profileID);
-					setUploadStatus({ type: "success", message: "Upload successful!" });
+					setUploadStatus({ type: "success", message: "Upload successful!!" });
 					if (onUploadSuccess) {
 						await onUploadSuccess(s3Url);
 					}
 				} catch (error) {
+					console.log("line 52")
+					console.log(error.message)
 					setUploadStatus({
 						type: "error",
 						message: error.message || "Upload failed. Please try again.",
@@ -88,8 +90,8 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				onDrop={handleDrop}
 				onClick={() => document.getElementById("fileInput").click()}
 				style={{
-					width: "300px",
-					height: "200px",
+					width: "240px",
+					height: "160px",
 					border: `2px dashed ${isDragging ? "#007bff" : "#ccc"}`,
 					borderRadius: "10px",
 					margin: "auto",
