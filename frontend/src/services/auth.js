@@ -97,3 +97,11 @@ export const refreshTokens = async () => {
 		throw error;
 	}
 };
+
+export const getUserEmail = () => {
+	const { idToken } = getTokens();
+	if (!idToken) return null;
+
+	const payload = JSON.parse(atob(idToken.split(".")[1]));
+	return payload.email;
+};
