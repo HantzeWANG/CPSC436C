@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const TouchIDVerification = () => {
+const TouchIDVerification = ({ userEmail }) => {
 	const [isSupported, setIsSupported] = useState(false);
 	const [, setIsVerified] = useState(false);
 	const [error, setError] = useState("");
@@ -78,7 +78,7 @@ const TouchIDVerification = () => {
 				},
 				user: {
 					id: userId,
-					name: "admin@example.com",
+					name: userEmail,
 					displayName: "Admin User",
 				},
 				pubKeyCredParams: [
