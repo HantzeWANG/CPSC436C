@@ -106,15 +106,6 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 
 	return (
 		<div style={{ textAlign: "center", marginTop: "20px" }}>
-			<TextField
-				label="Enter Text"
-				variant="outlined"
-				value={userId}
-				onChange={handleUserIdChange}
-				error={error}
-				helperText={helperText}
-				fullWidth
-			/>
 			<div
 				onDragOver={handleDragOver}
 				onDragLeave={handleDragLeave}
