@@ -70,56 +70,55 @@ const DashBoard = () => {
         }
     };
 
+    const loadFiles = async () => {
+        try {
+            const fileList = await listProfiles();
+
+            // Step 1: Deduplicate fileList by profile_id
+            const uniqueFiles = fileList.reduce((acc, file) => {
+                const profile_id = file.Key.split("/")
+                    .pop()
+                    .split(".")
+                    .slice(0, -1)
+                    .join(".")
+                    .split("_")
+                    .slice(0, -1)
+                    .join("_");
+
+                if (!acc.has(profile_id)) {
+                    acc.set(profile_id, file);
+                }
+
+                return acc;
+            }, new Map());
+
+            // Step 2: Fetch profile data for unique profile_ids
+            const formattedFiles = await Promise.all(
+                Array.from(uniqueFiles.entries()).map(async ([profile_id, file], index) => {
+                    const response = await fetch(`${API_URL}/profiles/${profile_id}/`);
+                    const profileData = await response.json();
+
+                    return {
+                        id: index + 1,
+                        profile_id: profile_id,
+                        profile_name: profileData[0]?.profile_name || "Unknown",
+                        profile_image: profileData[0]?.profile_image || "",
+                    };
+                })
+            );
+
+            // Step 3: Update state with unique profiles
+            setFiles(formattedFiles);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-		const loadFiles = async () => {
-			try {
-				const fileList = await listProfiles();
-	
-				// Step 1: Deduplicate fileList by profile_id
-				const uniqueFiles = fileList.reduce((acc, file) => {
-					const profile_id = file.Key.split("/")
-						.pop()
-						.split(".")
-						.slice(0, -1)
-						.join(".")
-						.split("_")
-						.slice(0, -1)
-						.join("_");
-	
-					if (!acc.has(profile_id)) {
-						acc.set(profile_id, file);
-					}
-	
-					return acc;
-				}, new Map());
-	
-				// Step 2: Fetch profile data for unique profile_ids
-				const formattedFiles = await Promise.all(
-					Array.from(uniqueFiles.entries()).map(async ([profile_id, file], index) => {
-						const response = await fetch(`${API_URL}/profiles/${profile_id}/`);
-						const profileData = await response.json();
-	
-						return {
-							id: index + 1,
-							profile_id: profile_id,
-							profile_name: profileData[0]?.profile_name || "Unknown",
-							profile_image: profileData[0]?.profile_image || "",
-						};
-					})
-				);
-	
-				// Step 3: Update state with unique profiles
-				setFiles(formattedFiles);
-			} catch (err) {
-				setError(err.message);
-			} finally {
-				setLoading(false);
-			}
-		};
-	
-		loadFiles();
-	}, []);
-	
+        loadFiles();
+    }, []);
 
     if (loading) return <div>Loading files...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -181,7 +180,12 @@ const DashBoard = () => {
                 />
             </Box>
             {showAddModal && (
-                <AddProfileModal onClose={() => setShowAddModal(false)} />
+                <AddProfileModal
+                    onClose={() => setShowAddModal(false)}
+                    onProfileAdded={() => {
+                        loadFiles();
+                    }}
+                />
             )}
             {showEditModal && (
                 <EditProfileModal
