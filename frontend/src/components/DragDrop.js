@@ -47,11 +47,13 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				try {
 					setIsUploading(true);
 					const s3Url = await uploadProfilePicture(file, profileID);
-					setUploadStatus({ type: "success", message: "Upload successful!" });
+					setUploadStatus({ type: "success", message: "Upload successful!!" });
 					if (onUploadSuccess) {
 						await onUploadSuccess(s3Url);
 					}
 				} catch (error) {
+					console.log("line 52")
+					console.log(error.message)
 					setUploadStatus({
 						type: "error",
 						message: error.message || "Upload failed. Please try again.",

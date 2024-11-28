@@ -87,7 +87,7 @@ export const listProfiles = async () => {
 			return []; // Return empty array as there are no files yet
 		}
 
-		return response.Contents;
+		return response.Contents.filter(item => !item.Key.endsWith("/"));
 	} catch (error) {
 		console.error("Error listing files:", error);
 		throw error;
@@ -112,6 +112,7 @@ export const uploadProfilePicture = async (file, profileId) => {
 
 		// Construct the S3 URL for the uploaded image
 		const imageUrl = `https://${profileBucket}.s3.${cognitoConfig.region}.amazonaws.com/${userId}/${profileId}.${fileExtension}`;
+		console.log(`Uploaded profile picture: ${imageUrl}`);
 		return imageUrl;
 	} catch (error) {
 		console.error("Error uploading profile picture:", error);

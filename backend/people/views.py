@@ -145,6 +145,16 @@ def create_profile(request):
         return Response({"error": str(e)}, status=400)
 
 @api_view(['GET'])
+# get all profiles for a user from mysql
+def get_profiles(request, profile_id):
+    try:
+        profiles = Profile.objects.filter(profile_id=profile_id)
+        serializer = ProfileSerializer(profiles, many=True)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(['GET'])
 def get_attendance(request):
     attendances = Attendance.objects.all()
     serializer = AttendanceSerializer(attendance, many=True)
