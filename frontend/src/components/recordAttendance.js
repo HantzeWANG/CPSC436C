@@ -4,7 +4,13 @@ import { uploadAttedancePhoto } from "../services/api";
 import TextField from "@mui/material/TextField";
 import HomeIcon from '@mui/icons-material/Home';
 import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 import { useNavigate } from "react-router-dom";
+import { AppBar, Toolbar } from "@mui/material";
+import Container from '@mui/material/Container';
 
 export const WebcamCapture = () => {
 	const navigate = useNavigate();
@@ -12,11 +18,11 @@ export const WebcamCapture = () => {
 	const [devices, setDevices] = useState([]);
 	const [profileID, setProfileID] = useState("");
 
-	const handleDevices = React.useCallback(
-		(mediaDevices) =>
-			setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
-		[setDevices]
-	);
+	const handleDevices = (mediaDevices) => {
+		const list = mediaDevices.filter(({ kind }) => kind === "videoinput")
+		setDevices(list)
+		setDeviceId(list[0].deviceId)
+	}
 
 	const handleDeviceChange = (event) => {
 		setDeviceId(event.target.value);
@@ -32,97 +38,84 @@ export const WebcamCapture = () => {
 
 	React.useEffect(() => {
 		navigator.mediaDevices.enumerateDevices().then(handleDevices);
-	}, [handleDevices]);
+	}, []);
 
 	return (
 		<>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					padding: "10px 20px",
-					marginBottom: "20px",
-				}}
-			>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "flex-start",
-						alignItems: "center",
-						flex: 1,
-					}}
-				>
-					<Button
-						variant="contained"
-						startIcon={<HomeIcon style={{ fontSize: 20 }} />}
-						onClick={handleGoBackHomePage}
-						style={{
-							fontSize: "0.8rem",
-							padding: "5px 15px",
-							backgroundColor: "#007bff",
-							color: "#fff",
-							borderRadius: "5px",
-							cursor: "pointer",
-						}}
-					>
-						Home
-					</Button>
-				</div>
-				<div
-					style={{
-						flex: 1,
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<h2 style={{ margin: 0 }}>Sign Attendance</h2>
-				</div>
-				<div style={{ flex: 1 }}></div>
-			</div>
+			<AppBar position="static" sx={{ background: '#fff', marginBottom: '20px' }}>
+				<Container maxWidth="xl">
+					<Toolbar disableGutters>
+						<HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#000', cursor: 'pointer' }} onClick={handleGoBackHomePage} />
+						<h2 style={{ color: '#000', width: '100%' }}>Sign Attendance</h2>
+					</Toolbar>
+				</Container>
+			</AppBar>
 			<div>
-				<p>Please enter your profile ID:</p>
-				<TextField
-					required
-					id="outlined-required"
-					label="Required"
-					value={profileID}
-					onChange={handleNameChange}
-				/>
-				<select onChange={handleDeviceChange}>
-					{devices.map((device, key) => (
-						<option key={key} value={device.deviceId}>
-							{device.label || `Device ${key + 1}`}
-						</option>
-					))}
-				</select>
-				<div>
-					<Webcam
-						audio={false}
-						height={720}
-						screenshotFormat="image/jpeg"
-						width={1280}
-						videoConstraints={{
-							width: 1280,
-							height: 720,
-							facingMode: "user",
-							deviceId: deviceId,
-						}}
-					>
-						{({ getScreenshot }) => (
-							<button
+				<Webcam
+					audio={false}
+					height={360}
+					screenshotFormat="image/jpeg"
+					width={640}
+					videoConstraints={{
+						width: 640,
+						height: 360,
+						facingMode: "user",
+						deviceId: deviceId,
+					}}
+				>
+					{({ getScreenshot }) => (
+						<div
+							style={{
+								position: 'fixed',
+								right: '10px',
+								bottom: '10px'
+							}}
+						>
+							<Button
+								variant="contained"
 								onClick={async () => {
 									const imageBase64 = getScreenshot();
 									console.log(imageBase64);
 									await uploadAttedancePhoto(imageBase64, profileID);
 									alert("Photo uploaded");
 								}}
+								sx={{ background: '#000' }}
 							>
 								Capture photo
-							</button>
-						)}
-					</Webcam>
+							</Button>
+						</div>
+					)}
+				</Webcam>
+			</div>
+			<div>
+				<TextField
+					required
+					id="profileId"
+					label="profile ID"
+					value={profileID}
+					onChange={handleNameChange}
+					sx={{
+						width: '210px',
+						margin: '10px 0'
+					}}
+				/>
+				<div style={{ display: 'flex', justifyContent: 'center' }}>
+				<div style={{ margin: '10px 0', width: "210px" }}>
+					<FormControl fullWidth>
+						<InputLabel id="demo-simple-select-label">camera</InputLabel>
+						<Select
+							value={deviceId}
+							label="camera"
+							onChange={handleDeviceChange}
+							>
+							{devices.map((device, key) => (
+								<MenuItem value={device.deviceId}>
+									{device.label || `Device ${key + 1}`}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</div>
 				</div>
 			</div>
 		</>
