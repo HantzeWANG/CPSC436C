@@ -7,8 +7,9 @@ import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
 import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
 import HomeIcon from '@mui/icons-material/Home';
-import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
+import { AppBar, Toolbar } from "@mui/material";
+import Container from '@mui/material/Container';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -118,36 +119,19 @@ const DashBoard = () => {
 
     return (
         <div>
-            <div
-                style={{
-                    position: "absolute",
-                    top: "10px",
-                    left: "10px",
-                }}
-            >
-                <Button
-                    variant="text"
-                    startIcon={<HomeIcon style={{ fontSize: 20 }} />}
-                    onClick={handleGoBackHomePage}
-                    style={{ fontSize: '0.8rem', padding: '5px 10px' }}
-                >
-                    Home
-                </Button>
-            </div>
+            <AppBar position="static" sx={{ background: '#fff', marginBottom: '20px' }}>
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#000', cursor: 'pointer' }} onClick={handleGoBackHomePage} />
+
+                        <h2 style={{ color: '#000', width: '100%' }}>Dashboard</h2>
+                    </Toolbar>
+                </Container>
+            </AppBar>
             <div
                 style={{
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: "20px",
-                }}
-            >
-                <h2>Dashboard</h2>
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "flex-end",
                     alignItems: "center",
                     marginBottom: "20px",
                 }}
@@ -161,6 +145,7 @@ const DashBoard = () => {
                         border: "none",
                         borderRadius: "5px",
                         cursor: "pointer",
+                        marginRight: '10px'
                     }}
                 >
                     Add Profile

@@ -56,19 +56,33 @@ const WelcomePage = () => {
     };
 
     return (
-        <div className="welcome-page">
+        <div
+            className="welcome-page"
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100vh',
+                justifyContent: 'center'
+            }}
+        >
             <Typography variant="h3" component="h1" gutterBottom>
                 Welcome to Attendance System
             </Typography>
 
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Typography gutterBottom sx={{ maxWidth: '50%' }}>
+                    Register by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfersRegister by December 13, initiate your deposits or transfers
+                </Typography>
+            </div> 
+
 			<br />
 
-            <div className="options" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
+            <div className="options" style={{ display: 'flex', alignItems: 'center', gap: '20px', width: '100%', justifyContent: 'center' }}>
                 <Button
                     variant="contained"
                     startIcon={<AccountBoxIcon style={{ fontSize: 40 }} />}
                     onClick={handleDashboardAccess}
-                    style={{ fontSize: '1.2rem', padding: '10px 20px', width: '50%' }}
+                    style={{ fontSize: '1.2rem', padding: '10px 20px', borderRadius: '50px', background: '#000' }}
                 >
                     Access Dashboard
                 </Button>
@@ -76,7 +90,7 @@ const WelcomePage = () => {
                     variant="contained"
                     startIcon={<AddAPhotoIcon style={{ fontSize: 40 }} />}
                     onClick={handleSignAttendance}
-                    style={{ fontSize: '1.2rem', padding: '10px 20px', width: '50%' }}
+                    style={{ fontSize: '1.2rem', padding: '10px 20px', borderRadius: '50px', background: '#fff', color: '#000' }}
                 >
                     TAKE ATTENDANCE
                 </Button>
