@@ -5,9 +5,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
 import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
-import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
-import HomeIcon from '@mui/icons-material/Home';
-import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -224,7 +221,6 @@ const DashBoard = () => {
                     <img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
                 </Box>
             </Modal>
-            <AttendanceDisplayGrid />
         </div>
     );
 };

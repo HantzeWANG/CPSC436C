@@ -1,16 +1,19 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
-import { useEffect, useState } from "react";
-import { getUserId } from "../services/profilepics";
+import {DataGrid} from '@mui/x-data-grid';
+import {useEffect, useState} from "react";
+import {getUserId} from "../services/profilepics";
+import {Alert, Button, Collapse, IconButton} from "@mui/material";
+import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const AttendanceDisplayGrid = () => {
     const [rows, setRows] = useState([]);
     const [error, setError] = useState(null);
+    const [expandedDates, setExpandedDates] = useState({});
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        {field: 'id', headerName: 'ID', width: 90},
         {
             field: 'profile',
             headerName: 'Name',
@@ -85,18 +88,23 @@ const AttendanceDisplayGrid = () => {
         }, {});
     };
 
+    const handleToggleCollapse = (dateKey) => {
+        setExpandedDates(prevState => ({
+            ...prevState,
+            [dateKey]: !prevState[dateKey], // Toggle the collapse state
+        }));
+    };
+
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            {Object.keys(rows).map((dateKey) => {
-                const tableRows = rows[dateKey];
-                const [year, month, day] = dateKey.split('-');
-                return (
-                    <div key={dateKey} style={{ marginBottom: '20px' }}>
-                        <h2>{`Date: ${month}-${day}-${year}`}</h2>
+        <Box sx={{height: 400, width: '100%'}}>
+            {
+                Object.keys(rows).length === 0 ? (
+                    <div style={{textAlign: 'center', margin: '20px', color: 'gray'}}>
+                        <Alert severity="info">No associated attendance has been retrieved.</Alert>
                         <DataGrid
-                            rows={tableRows}
+                            rows={[]}
                             columns={columns}
                             pageSize={5}
                             rowsPerPageOptions={[5, 10, 20]}
@@ -111,8 +119,43 @@ const AttendanceDisplayGrid = () => {
                             }}
                         />
                     </div>
-                );
-            })}
+                ) : (
+                    Object.keys(rows).map((dateKey) => {
+                        const tableRows = rows[dateKey];
+                        const [year, month, day] = dateKey.split('-');
+                        const isExpanded = expandedDates[dateKey];
+
+                        return (
+                            <div key={dateKey} style={{marginBottom: '20px'}}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <h2>{`Date: ${month}-${day}-${year}`}</h2>
+                                    <IconButton onClick={() => handleToggleCollapse(dateKey)} color="primary">
+                                        {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                                    </IconButton>
+                                </div>
+
+                                {/* Collapsible DataGrid */}
+                                <Collapse in={isExpanded}>
+                                    <DataGrid
+                                        rows={tableRows}
+                                        columns={columns}
+                                        pageSize={5}
+                                        rowsPerPageOptions={[5, 10, 20]}
+                                        disableSelectionOnClick
+                                        sx={{
+                                            boxShadow: 2,
+                                            border: 1,
+                                            borderColor: 'grey.400',
+                                            '& .MuiDataGrid-cell:hover': {
+                                                color: 'primary.main',
+                                            },
+                                        }}
+                                    />
+                                </Collapse>
+                            </div>
+                        );
+                    })
+                )}
         </Box>
     );
 };
