@@ -16,6 +16,7 @@ import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDVerification from "./components/TouchIDVerification";
+import Layout from "./components/Layout";
 
 
 const theme = createTheme();
@@ -58,19 +59,24 @@ function App() {
 							}
 						/>
 
-						<Route
-							path="/dashboard"
-							element={
-								<ProtectedRoute>
-									<DashBoard />
-								</ProtectedRoute>
-							}
-						/>
-						<Route path="/profilepic" element={
-							<ProtectedRoute>
-							<DragDrop />
-							</ProtectedRoute>}
-						/>
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout showSideNav={true}>
+                                        <DashBoard/>
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route path="/attendance-detail" element={
+                            <ProtectedRoute>
+                                <Layout showSideNav={true}>
+                                    <AttendanceDisplayGrid/>
+                                </Layout>
+                            </ProtectedRoute>}
+                        />
 
 						<Route PATH="/detailedAttendance" element={
 							<AttendanceDisplayGrid />

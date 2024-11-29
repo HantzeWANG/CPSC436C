@@ -209,7 +209,6 @@ const DashBoard = () => {
                     <img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
                 </Box>
             </Modal>
-            <AttendanceDisplayGrid />
         </div>
     );
 };

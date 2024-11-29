@@ -1,61 +1,39 @@
-/* Base styles for the side nav */
+/* SideNav.css */
 .sidenav {
+    width: 200px;
     position: fixed;
     top: 0;
     left: 0;
-    width: 250px;
     height: 100%;
-    background-color: #111;
-    overflow-x: hidden;
-    transition: transform 0.3s ease;
-    transform: translateX(-100%);
+    background: linear-gradient(180deg, #000428, #004e92);
     color: white;
-    z-index: 1000;
+    padding-top: 20px;
 }
 
-/* When the side nav is open */
-.sidenav.open {
-    transform: translateX(0);
-}
-
-/* Navigation links */
-.sidenav nav ul {
-    list-style: none;
+.sidenav-list {
+    list-style-type: none;
     padding: 0;
-    margin: 0;
 }
 
-.sidenav nav ul li {
-    padding: 16px;
-    text-align: left;
+.sidenav-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.sidenav nav ul li a {
-    color: white;
+.sidenav-icon {
+    margin-right: 8px;
+    font-size: 24px; /* Adjust icon size */
+    color: #555; /* Icon color */
+}
+
+.sidenav-item a {
     text-decoration: none;
-    font-size: 18px;
-}
-
-.sidenav nav ul li a:hover {
-    background-color: #575757;
-    display: block;
-    border-radius: 4px;
-}
-
-/* Toggle button */
-.toggle-btn {
-    position: absolute;
-    top: 10px;
-    right: -50px;
-    background-color: #111;
     color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.3s ease;
 }
 
-.toggle-btn:hover {
-    background-color: #575757;
+.sidenav-item:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+    cursor: pointer;
 }
+
