@@ -182,10 +182,16 @@ def get_profiles(request, profile_id):
         return Response({"error": str(e)}, status=400)
 
 @api_view(['GET'])
-def get_attendance(request):
-    attendances = Attendance.objects.all()
-    serializer = AttendanceSerializer(attendances, many=True)
-    return Response(serializer.data, status=200)
+def get_attendance_by_admin(request, admin_id):
+    try:
+
+        profiles = Profile.objects.filter(admin_id=admin_id)
+
+        attendance = Attendance.objects.filter(profile__in=profiles)
+        serializer = AttendanceSerializer(attendance, many=True)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
 
 @api_view(['POST'])
 def update_profile(request):

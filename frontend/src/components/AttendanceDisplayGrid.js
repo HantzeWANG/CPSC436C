@@ -1,13 +1,16 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import {DataGrid} from '@mui/x-data-grid';
-import {useEffect, useState} from "react";
+import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useState } from "react";
+import { getUserId } from "../services/profilepics";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 const AttendanceDisplayGrid = () => {
     const [rows, setRows] = useState([]);
     const [error, setError] = useState(null);
     const columns = [
-        {field: 'id', headerName: 'ID', width: 90},
+        { field: 'id', headerName: 'ID', width: 90 },
         {
             field: 'profile',
             headerName: 'Name',
@@ -32,36 +35,41 @@ const AttendanceDisplayGrid = () => {
     ];
 
     useEffect(() => {
-        // Fetch data from the API when the component mounts
-        fetch('http://127.0.0.1:8000/api/attendance/')
-            .then(response => response.json())
-            .then(data => {
+        const fetchData = async () => {
+            try {
+                const userid = await getUserId();
+                const response = await fetch(`${API_URL}/attendance/${userid}/`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch attendance data");
+                }
+                const data = await response.json();
                 const processedData = processData(data);
                 const groupedData = groupByDate(processedData);
                 setRows(groupedData);
-            })
-            .catch(error => {
-                setError(error);  // Handle errors
-            });
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchData();
     }, []);
 
     function processData(data) {
         return data.map(item => {
-                const timestamp = new Date(item.timestamp);
-                const date = timestamp.getDate();
-                const month = timestamp.getMonth() + 1;
-                const year = timestamp.getFullYear();
+            const timestamp = new Date(item.timestamp);
+            const date = timestamp.getDate();
+            const month = timestamp.getMonth() + 1;
+            const year = timestamp.getFullYear();
 
-                return {
-                    id: item.id,
-                    profile: item.profile,
-                    date: date,
-                    month: month,
-                    year: year,
-                    photo_url: item.photo_url,
-                }
-
-        })
+            return {
+                id: item.id,
+                profile: item.profile,
+                date: date,
+                month: month,
+                year: year,
+                photo_url: item.photo_url,
+            };
+        });
     }
 
     const groupByDate = (data) => {
@@ -77,30 +85,31 @@ const AttendanceDisplayGrid = () => {
         }, {});
     };
 
+    if (error) return <div>Error: {error}</div>;
 
     return (
-        <Box sx={{height: 400, width: '100%'}}>
+        <Box sx={{ height: 400, width: '100%' }}>
             {Object.keys(rows).map((dateKey) => {
                 const tableRows = rows[dateKey];
                 const [year, month, day] = dateKey.split('-');
                 return (
                     <div key={dateKey} style={{ marginBottom: '20px' }}>
                         <h2>{`Date: ${month}-${day}-${year}`}</h2>
-                    <DataGrid
-                        rows={tableRows}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5, 10, 20]}
-                        disableSelectionOnClick
-                        sx={{
-                            boxShadow: 2,
-                            border: 1,
-                            borderColor: 'grey.400',
-                            '& .MuiDataGrid-cell:hover': {
-                                color: 'primary.main',
-                            },
-                        }}
-                    />
+                        <DataGrid
+                            rows={tableRows}
+                            columns={columns}
+                            pageSize={5}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            disableSelectionOnClick
+                            sx={{
+                                boxShadow: 2,
+                                border: 1,
+                                borderColor: 'grey.400',
+                                '& .MuiDataGrid-cell:hover': {
+                                    color: 'primary.main',
+                                },
+                            }}
+                        />
                     </div>
                 );
             })}
