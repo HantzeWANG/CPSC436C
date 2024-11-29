@@ -26,11 +26,6 @@ const AttendanceDisplayGrid = () => {
 			width: 150,
 		},
 		{
-			field: "date",
-			headerName: "Date",
-			width: 200,
-		},
-		{
 			field: "attendance",
 			headerName: "Attendance",
 			width: 200,
@@ -39,14 +34,19 @@ const AttendanceDisplayGrid = () => {
 			},
 		},
 		{
-			field: "attendance_photo",
-			headerName: "Attendance Photo",
+			field: "check_in_time",
+			headerName: "Check-in Time",
+			width: 200,
+		},
+		{
+			field: "check_in_image",
+			headerName: "Check-in Image",
 			width: 200,
 			renderCell: (params) => {
 				console.log("params: ", params);
-				return params.row.attendance_photo ? (
+				return params.row.check_in_image ? (
 					<button
-						onClick={() => setPreviewImageUrl(params.row.attendance_photo)}
+						onClick={() => setPreviewImageUrl(params.row.check_in_image)}
 						style={{
 							background: "none",
 							border: "none",
@@ -80,6 +80,11 @@ const AttendanceDisplayGrid = () => {
 			acc[dateKey].set(record.profile.profile_id, {
 				present: true,
 				photo: record.photo_url,
+				time: date.toLocaleTimeString("en-US", {
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+				}),
 			});
 			return acc;
 		}, {});
@@ -98,9 +103,9 @@ const AttendanceDisplayGrid = () => {
 					id: `${dateKey}-${profile.profile_id}`,
 					profile_id: profile.profile_id,
 					profile_name: profile.profile_name,
-					date: dateKey,
+					check_in_time: attendanceInfo?.time || null,
 					attendance: attendanceInfo?.present || false,
-					attendance_photo: attendanceInfo?.photo || null,
+					check_in_image: attendanceInfo?.photo || null,
 				};
 			});
 		});
