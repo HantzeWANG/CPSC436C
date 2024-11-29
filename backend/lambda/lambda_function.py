@@ -76,14 +76,14 @@ def lambda_handler(event, context):
             print("[INFO] Face match successful, check-in recorded")
             return {
                 "statusCode": 200,
-                "body": "Check In Completed"
+                "body": "Face match successful, check-in recorded"
             }
-        # Case 2: Face not detected or failed facial comparison
+        # Case 2: Failed facial comparison
         else:
             print("[INFO] Face match failed")
             return {
                 "statusCode": 200,
-                "body": "Check In Failed"
+                "body": "Face match failed"
             }
 
     except Exception as e:
@@ -103,29 +103,33 @@ def handle_rekognition(bucket1_name, img1_key, bucket2_name, img2_key):
         source_faces = client.detect_faces(
             Image={'S3Object': {'Bucket': bucket1_name, 'Name': img1_key}}
         )
-        
+
         if not source_faces.get('FaceDetails'):
             print("[ERROR] No face detected in attendance photo")
             return None, ClientError(
-                {'Error': {'Code': 'InvalidParameterException', 'Message': 'No face detected in attendance photo'}},
+                {'Error': {'Code': 'InvalidParameterException',
+                           'Message': 'No face detected in attendance photo'}},
                 'CompareFaces'
             )
-        
+
         target_faces = client.detect_faces(
             Image={'S3Object': {'Bucket': bucket2_name, 'Name': img2_key}}
         )
-        
+
         if not target_faces.get('FaceDetails'):
             print("[ERROR] No face detected in profile photo")
             return None, ClientError(
-                {'Error': {'Code': 'InvalidParameterException', 'Message': 'No face detected in profile photo'}},
+                {'Error': {'Code': 'InvalidParameterException',
+                           'Message': 'No face detected in profile photo'}},
                 'CompareFaces'
             )
 
         comparison_response = client.compare_faces(
             SimilarityThreshold=80,
-            SourceImage={'S3Object': {'Bucket': bucket1_name, 'Name': img1_key}},
-            TargetImage={'S3Object': {'Bucket': bucket2_name, 'Name': img2_key}}
+            SourceImage={'S3Object': {
+                'Bucket': bucket1_name, 'Name': img1_key}},
+            TargetImage={'S3Object': {
+                'Bucket': bucket2_name, 'Name': img2_key}}
         )
         return comparison_response, None
 
@@ -155,13 +159,14 @@ def get_path_from_db(profile_id):
         cursor = connection.cursor()
 
         # Fix the tuple syntax and fetch data
-        cursor.execute("SELECT profile_image FROM people_profile WHERE profile_id = %s", (profile_id,))
+        cursor.execute(
+            "SELECT profile_image FROM people_profile WHERE profile_id = %s", (profile_id,))
         result_tuple = cursor.fetchall()
-        
+
         if not result_tuple:
             print(f"[ERROR] No profile found for ID: {profile_id}")
             return None
-            
+
         return result_tuple[0][0]
 
     except Exception as e:
@@ -183,7 +188,7 @@ def insert_data_into_db(profile_id, photo_url, timestamp):
         db_user = os.environ["DB_USER"]
         db_password = os.environ["DB_PASSWORD"]
         db_name = os.environ["DB_NAME"]
-        
+
         # Connect to the database
         connection = pymysql.connect(
             host=db_host,
@@ -192,15 +197,15 @@ def insert_data_into_db(profile_id, photo_url, timestamp):
             database=db_name
         )
         cursor = connection.cursor()
-        
+
         # Execute the query
         cursor.execute(
-            "INSERT INTO people_attendance (profile_id, photo_url, timestamp) VALUES (%s, %s, %s)", 
+            "INSERT INTO people_attendance (profile_id, photo_url, timestamp) VALUES (%s, %s, %s)",
             (profile_id, photo_url, timestamp)
         )
         connection.commit()
         return None
-    
+
     except Exception as e:
         print(f"[ERROR] Database insertion error: {str(e)}")
         return str(e)
