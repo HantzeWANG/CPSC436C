@@ -77,7 +77,8 @@ export const WebcamCapture = () => {
 									const imageBase64 = getScreenshot();
 									console.log(imageBase64);
 									await uploadAttedancePhoto(imageBase64, profileID);
-									alert("Photo uploaded");
+									const { statusCode, message } = await uploadAttedancePhoto(imageBase64, profileID);
+        							alert(`Status: ${statusCode}\nMessage: ${message}`);
 								}}
 								sx={{ background: '#000' }}
 							>
