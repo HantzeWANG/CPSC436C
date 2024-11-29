@@ -30,8 +30,6 @@ const AddProfileModal = ({ onClose, onProfileAdded }) => {
                 message: "Profile created successfully!",
             });
 
-			console.log("onProfileAdded:", onProfileAdded);
-
             setTimeout(() => {
                 onClose();
                 if (typeof onProfileAdded === 'function') {

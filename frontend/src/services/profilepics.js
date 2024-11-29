@@ -43,7 +43,7 @@ const getS3Client = async () => {
 	return s3Client;
 };
 
-const getUserId = async () => {
+export const getUserId = async () => {
 	const { idToken } = getTokens();
 	const payload = JSON.parse(atob(idToken.split(".")[1]));
 	return payload.sub; // Cognito user ID

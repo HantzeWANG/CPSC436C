@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { listProfiles } from "../services/profilepics";
+import { getUserId } from "../services/profilepics";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
 import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
-import {useNavigate} from "react-router-dom";
 import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
+import HomeIcon from '@mui/icons-material/Home';
+import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const DashBoard = () => {
+    const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -74,42 +77,26 @@ const DashBoard = () => {
 
     const loadFiles = async () => {
         try {
-            const fileList = await listProfiles();
+            const userid = await getUserId();
+            const response = await fetch(`${API_URL}/profiles_by_admin/${userid}/`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-            // Step 1: Deduplicate fileList by profile_id
-            const uniqueFiles = fileList.reduce((acc, file) => {
-                const profile_id = file.Key.split("/")
-                    .pop()
-                    .split(".")
-                    .slice(0, -1)
-                    .join(".")
-                    .split("_")
-                    .slice(0, -1)
-                    .join("_");
+            if (!response.ok) {
+                throw new Error("Failed to fetch profiles");
+            }
 
-                if (!acc.has(profile_id)) {
-                    acc.set(profile_id, file);
-                }
+            const profiles = await response.json();
+            const formattedFiles = profiles.map((profile, index) => ({
+                id: index + 1,
+                profile_id: profile.profile_id,
+                profile_name: profile.profile_name,
+                profile_image: profile.profile_image,
+            }));
 
-                return acc;
-            }, new Map());
-
-            // Step 2: Fetch profile data for unique profile_ids
-            const formattedFiles = await Promise.all(
-                Array.from(uniqueFiles.entries()).map(async ([profile_id, file], index) => {
-                    const response = await fetch(`${API_URL}/profiles/${profile_id}/`);
-                    const profileData = await response.json();
-
-                    return {
-                        id: index + 1,
-                        profile_id: profile_id,
-                        profile_name: profileData[0]?.profile_name || "Unknown",
-                        profile_image: profileData[0]?.profile_image || "",
-                    };
-                })
-            );
-
-            // Step 3: Update state with unique profiles
             setFiles(formattedFiles);
         } catch (err) {
             setError(err.message);
@@ -125,16 +112,46 @@ const DashBoard = () => {
     if (loading) return <div>Loading files...</div>;
     if (error) return <div>Error: {error}</div>;
 
+    const handleGoBackHomePage = () => {
+        navigate("/welcome");
+    };
+
     return (
         <div>
+            <div
+                style={{
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                }}
+            >
+                <Button
+                    variant="text"
+                    startIcon={<HomeIcon style={{ fontSize: 20 }} />}
+                    onClick={handleGoBackHomePage}
+                    style={{ fontSize: '0.8rem', padding: '5px 10px' }}
+                >
+                    Home
+                </Button>
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: "20px",
+                }}
+            >
+                <h2>Dashboard</h2>
+            </div>
             <div
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginBottom: "20px",
                 }}
             >
-                <h2>Dashboard</h2>
                 <button
                     onClick={() => setShowAddModal(true)}
                     style={{
@@ -182,12 +199,7 @@ const DashBoard = () => {
                 />
             </Box>
             {showAddModal && (
-                <AddProfileModal
-                    onClose={() => setShowAddModal(false)}
-                    onProfileAdded={() => {
-                        loadFiles();
-                    }}
-                />
+                <AddProfileModal onClose={() => setShowAddModal(false)} onProfileAdded={loadFiles} />
             )}
             {showEditModal && (
                 <EditProfileModal
@@ -212,7 +224,7 @@ const DashBoard = () => {
                     <img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
                 </Box>
             </Modal>
-			<AttendanceDisplayGrid></AttendanceDisplayGrid>
+            <AttendanceDisplayGrid />
         </div>
     );
 };

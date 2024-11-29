@@ -172,3 +172,12 @@ def update_profile(request):
         return Response(serializer.data, status=200)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+    
+@api_view(['GET'])
+def get_profile_by_admin(request, admin_id):
+    try:
+        profiles = Profile.objects.filter(admin_id=admin_id)
+        serializer = ProfileSerializer(profiles, many=True)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)

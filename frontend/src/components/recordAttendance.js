@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import Webcam from "react-webcam";
 import { uploadAttedancePhoto } from "../services/api";
 import TextField from "@mui/material/TextField";
+import HomeIcon from '@mui/icons-material/Home';
+import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
+
 export const WebcamCapture = () => {
+	const navigate = useNavigate();
 	const [deviceId, setDeviceId] = useState({});
 	const [devices, setDevices] = useState([]);
 	const [profileID, setProfileID] = useState("");
@@ -21,12 +26,61 @@ export const WebcamCapture = () => {
 		setProfileID(event.target.value);
 	};
 
+	const handleGoBackHomePage = () => {
+		navigate("/welcome");
+	};
+
 	React.useEffect(() => {
 		navigator.mediaDevices.enumerateDevices().then(handleDevices);
 	}, [handleDevices]);
 
 	return (
 		<>
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					padding: "10px 20px",
+					marginBottom: "20px",
+				}}
+			>
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "flex-start",
+						alignItems: "center",
+						flex: 1,
+					}}
+				>
+					<Button
+						variant="contained"
+						startIcon={<HomeIcon style={{ fontSize: 20 }} />}
+						onClick={handleGoBackHomePage}
+						style={{
+							fontSize: "0.8rem",
+							padding: "5px 15px",
+							backgroundColor: "#007bff",
+							color: "#fff",
+							borderRadius: "5px",
+							cursor: "pointer",
+						}}
+					>
+						Home
+					</Button>
+				</div>
+				<div
+					style={{
+						flex: 1,
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<h2 style={{ margin: 0 }}>Sign Attendance</h2>
+				</div>
+				<div style={{ flex: 1 }}></div>
+			</div>
 			<div>
 				<p>Please enter your profile ID:</p>
 				<TextField
