@@ -44,7 +44,7 @@ def upload_file(file_name, bucket, object_name=None, client=None):
         # Upload the file to S3
         print(f"Uploading file {file_name} to bucket {bucket} with object name {object_name}")
         client.upload_file(file_name, bucket, object_name)
-        file_url = f"https://{bucket}.s3.ca-central-1.amazonaws.com/{object_name}"
+        file_url = f"https://{bucket}.s3.amazonaws.com/{object_name}"
         print(f"File uploaded successfully to {file_url}")
         return file_url
     except ClientError as e:
@@ -68,26 +68,6 @@ def get_user_id(id_token):
     # Parse the JSON payload and extract 'sub'
     payload = json.loads(payload_decoded)
     return payload.get("sub")
-
-def invoke_lambda(path, client=None):
-    lambda_function_name = 'facialRecognition'
-    payload = {
-        'path': path
-    }
-    try:
-        response = client.invoke(
-            FunctionName=lambda_function_name,
-            InvocationType='RequestResponse',
-            Payload=json.dumps(payload)
-        )
-        response_payload = json.loads(response['Payload'].read())
-        status_code = response_payload.get('statusCode', 500)
-        body = response_payload.get('body', 'Unknown error')
-        if status_code == 500:
-            raise RuntimeError(f"Lambda error: {body}")
-        return status_code, body
-    except ClientError as e:
-        raise RuntimeError(f"Error invoking Lambda: {e}")
 
 # store and upload the attendance picture to s3, then delete the file
 
@@ -143,14 +123,7 @@ def upload_attendance_picture(request):
     # delete the attendance picture file
     os.remove(attendance_picture_local_path)
 
-    lambda_client = boto3.client(
-        'lambda',
-        aws_access_key_id=response['Credentials']['AccessKeyId'],
-        aws_secret_access_key=response['Credentials']['SecretKey'],
-        aws_session_token=response['Credentials']['SessionToken']
-    )
-    response_status, response_body = invoke_lambda(attendance_picture_url, lambda_client)
-    return Response({'message': f'{response_body}'}, status=response_status)
+    return Response({"message": "Success"}, status=200)
 
 
 @api_view(['POST'])
