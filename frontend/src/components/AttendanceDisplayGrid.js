@@ -1,163 +1,259 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import {DataGrid} from '@mui/x-data-grid';
-import {useEffect, useState} from "react";
-import {getUserId} from "../services/profilepics";
-import {Alert, Button, Collapse, IconButton} from "@mui/material";
-import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import * as React from "react";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
+import { useEffect, useState } from "react";
+import { getUserId } from "../services/profilepics";
+import { Alert, Collapse, IconButton } from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import Modal from "@mui/material/Modal";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const AttendanceDisplayGrid = () => {
-    const [rows, setRows] = useState([]);
-    const [error, setError] = useState(null);
-    const [expandedDates, setExpandedDates] = useState({});
-    const columns = [
-        {field: 'id', headerName: 'ID', width: 90},
-        {
-            field: 'profile',
-            headerName: 'Name',
-            width: 150,
-        },
-        {
-            field: 'photo_url',
-            headerName: 'Photo URL',
-            width: 110,
-        },
-        {
-            field: 'date',
-            headerName: 'Date',
-            width: 200,
-        },
-        {
-            field: 'attendance',
-            headerName: 'Attendance',
-            width: 200,
-            editable: true,
-        },
-    ];
+	const [rows, setRows] = useState([]);
+	const [error, setError] = useState(null);
+	const [expandedDates, setExpandedDates] = useState({});
+	const [previewImageUrl, setPreviewImageUrl] = useState(null);
+	const columns = [
+		{
+			field: "profile_id",
+			headerName: "ID",
+			width: 90,
+		},
+		{
+			field: "profile_name",
+			headerName: "Name",
+			width: 150,
+		},
+		{
+			field: "attendance",
+			headerName: "Attendance",
+			width: 200,
+			valueGetter: (params) => {
+				return params ? "✅" : "❌";
+			},
+		},
+		{
+			field: "check_in_time",
+			headerName: "Check-in Time",
+			width: 200,
+		},
+		{
+			field: "check_in_image",
+			headerName: "Check-in Image",
+			width: 200,
+			renderCell: (params) => {
+				console.log("params: ", params);
+				return params.row.check_in_image ? (
+					<button
+						onClick={() => setPreviewImageUrl(params.row.check_in_image)}
+						style={{
+							background: "none",
+							border: "none",
+							color: "#007bff",
+							cursor: "pointer",
+							textDecoration: "underline",
+						}}
+					>
+						Preview Image
+					</button>
+				) : null;
+			},
+		},
+	];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const userid = await getUserId();
-                const response = await fetch(`${API_URL}/attendance/${userid}/`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch attendance data");
-                }
-                const data = await response.json();
-                const processedData = processData(data);
-                const groupedData = groupByDate(processedData);
-                setRows(groupedData);
-            } catch (error) {
-                setError(error.message);
-            }
-        };
+	function processData(profiles, attendanceRecords) {
+		console.log("Processing - Profiles:", profiles);
+		console.log("Processing - Attendance Records:", attendanceRecords);
 
-        fetchData();
-    }, []);
+		const attendanceByDate = attendanceRecords.reduce((acc, record) => {
+			const date = new Date(record.timestamp);
+			const dateKey = date.toLocaleDateString("en-US", {
+				year: "numeric",
+				month: "2-digit",
+				day: "2-digit",
+			});
 
-    function processData(data) {
-        return data.map(item => {
-            const timestamp = new Date(item.timestamp);
-            const date = timestamp.getDate();
-            const month = timestamp.getMonth() + 1;
-            const year = timestamp.getFullYear();
+			if (!acc[dateKey]) {
+				acc[dateKey] = new Map();
+			}
+			acc[dateKey].set(record.profile.profile_id, {
+				present: true,
+				photo: record.photo_url,
+				time: date.toLocaleTimeString("en-US", {
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+				}),
+			});
+			return acc;
+		}, {});
 
-            return {
-                id: item.id,
-                profile: item.profile,
-                date: date,
-                month: month,
-                year: year,
-                photo_url: item.photo_url,
-            };
-        });
-    }
+		console.log("Attendance by date:", attendanceByDate);
 
-    const groupByDate = (data) => {
-        return data.reduce((acc, item) => {
-            const dateKey = `${item.year}-${item.month}-${item.date}`;
+		// Create a map of dates and their corresponding rows
+		const groupedData = {};
+		Object.keys(attendanceByDate).forEach((dateKey) => {
+			// For each date, create a row for each profile
+			groupedData[dateKey] = profiles.map((profile) => {
+				const attendanceInfo = attendanceByDate[dateKey].get(
+					profile.profile_id
+				);
+				return {
+					id: `${dateKey}-${profile.profile_id}`,
+					profile_id: profile.profile_id,
+					profile_name: profile.profile_name,
+					check_in_time: attendanceInfo?.time || null,
+					attendance: attendanceInfo?.present || false,
+					check_in_image: attendanceInfo?.photo || null,
+				};
+			});
+		});
 
-            if (!acc[dateKey]) {
-                acc[dateKey] = [];
-            }
-            acc[dateKey].push(item);
+		// Sort dates in descending order
+		const sortedData = Object.fromEntries(
+			Object.entries(groupedData).sort((a, b) => {
+				const dateA = new Date(a[0]);
+				const dateB = new Date(b[0]);
+				return dateB - dateA;
+			})
+		);
 
-            return acc;
-        }, {});
-    };
+		return sortedData;
+	}
 
-    const handleToggleCollapse = (dateKey) => {
-        setExpandedDates(prevState => ({
-            ...prevState,
-            [dateKey]: !prevState[dateKey], // Toggle the collapse state
-        }));
-    };
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const userid = await getUserId();
 
-    if (error) return <div>Error: {error}</div>;
+				// Fetch all profiles under this admin
+				const profilesResponse = await fetch(
+					`${API_URL}/profiles_by_admin/${userid}/`
+				);
+				if (!profilesResponse.ok) {
+					throw new Error("Failed to fetch profiles");
+				}
+				const profiles = await profilesResponse.json();
 
-    return (
-        <Box sx={{height: 400, width: '100%'}}>
-            {
-                Object.keys(rows).length === 0 ? (
-                    <div style={{textAlign: 'center', margin: '20px', color: 'gray'}}>
-                        <Alert severity="info">No associated attendance has been retrieved.</Alert>
-                        <DataGrid
-                            rows={[]}
-                            columns={columns}
-                            pageSize={5}
-                            rowsPerPageOptions={[5, 10, 20]}
-                            disableSelectionOnClick
-                            sx={{
-                                boxShadow: 2,
-                                border: 1,
-                                borderColor: 'grey.400',
-                                '& .MuiDataGrid-cell:hover': {
-                                    color: 'primary.main',
-                                },
-                            }}
-                        />
-                    </div>
-                ) : (
-                    Object.keys(rows).map((dateKey) => {
-                        const tableRows = rows[dateKey];
-                        const [year, month, day] = dateKey.split('-');
-                        const isExpanded = expandedDates[dateKey];
+				// Fetch attendance records
+				const attendanceResponse = await fetch(
+					`${API_URL}/attendance/${userid}/`
+				);
+				if (!attendanceResponse.ok) {
+					throw new Error("Failed to fetch attendance data");
+				}
+				const attendanceData = await attendanceResponse.json();
 
-                        return (
-                            <div key={dateKey} style={{marginBottom: '20px'}}>
-                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <h2>{`Date: ${month}-${day}-${year}`}</h2>
-                                    <IconButton onClick={() => handleToggleCollapse(dateKey)} color="primary">
-                                        {isExpanded ? <ExpandLess /> : <ExpandMore />}
-                                    </IconButton>
-                                </div>
+				// Process the data
+				const processedData = processData(profiles, attendanceData);
+				setRows(processedData);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+				setError(error.message);
+			}
+		};
 
-                                {/* Collapsible DataGrid */}
-                                <Collapse in={isExpanded}>
-                                    <DataGrid
-                                        rows={tableRows}
-                                        columns={columns}
-                                        pageSize={5}
-                                        rowsPerPageOptions={[5, 10, 20]}
-                                        disableSelectionOnClick
-                                        sx={{
-                                            boxShadow: 2,
-                                            border: 1,
-                                            borderColor: 'grey.400',
-                                            '& .MuiDataGrid-cell:hover': {
-                                                color: 'primary.main',
-                                            },
-                                        }}
-                                    />
-                                </Collapse>
-                            </div>
-                        );
-                    })
-                )}
-        </Box>
-    );
+		fetchData();
+	}, []);
+
+	const handleToggleCollapse = (dateKey) => {
+		setExpandedDates((prevState) => ({
+			...prevState,
+			[dateKey]: !prevState[dateKey], // Toggle the collapse state
+		}));
+	};
+
+	if (error) return <div>Error: {error}</div>;
+
+	return (
+		<>
+			<Box sx={{ height: 400, width: "100%" }}>
+				{Object.keys(rows).length === 0 ? (
+					<div style={{ textAlign: "center", margin: "20px", color: "gray" }}>
+						<Alert severity="info">
+							No associated attendance has been retrieved.
+						</Alert>
+						<DataGrid
+							rows={[]}
+							columns={columns}
+							pageSize={5}
+							rowsPerPageOptions={[5, 10, 20]}
+							disableSelectionOnClick
+							sx={{
+								boxShadow: 2,
+								border: 1,
+								borderColor: "grey.400",
+								"& .MuiDataGrid-cell:hover": {
+									color: "primary.main",
+								},
+							}}
+						/>
+					</div>
+				) : (
+					Object.keys(rows).map((dateKey) => {
+						const tableRows = rows[dateKey];
+						const isExpanded = expandedDates[dateKey];
+
+						return (
+							<div key={dateKey} style={{ marginBottom: "20px" }}>
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+									}}
+								>
+									<h2>{`Date: ${dateKey}`}</h2>
+									<IconButton
+										onClick={() => handleToggleCollapse(dateKey)}
+										color="primary"
+									>
+										{isExpanded ? <ExpandLess /> : <ExpandMore />}
+									</IconButton>
+								</div>
+
+								{/* Collapsible DataGrid */}
+								<Collapse in={isExpanded}>
+									<DataGrid
+										rows={tableRows}
+										columns={columns}
+										pageSize={5}
+										rowsPerPageOptions={[5, 10, 20]}
+										disableSelectionOnClick
+										sx={{
+											boxShadow: 2,
+											border: 1,
+											borderColor: "grey.400",
+											"& .MuiDataGrid-cell:hover": {
+												color: "primary.main",
+											},
+										}}
+									/>
+								</Collapse>
+							</div>
+						);
+					})
+				)}
+			</Box>
+			<Modal open={!!previewImageUrl} onClose={() => setPreviewImageUrl(null)}>
+				<Box
+					sx={{
+						position: "absolute",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						width: 400,
+						bgcolor: "background.paper",
+						boxShadow: 24,
+						p: 4,
+					}}
+				>
+					<img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
+				</Box>
+			</Modal>
+		</>
+	);
 };
 
 export default AttendanceDisplayGrid;
