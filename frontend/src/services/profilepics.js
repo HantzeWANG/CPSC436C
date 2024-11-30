@@ -2,10 +2,12 @@ import {
 	S3Client,
 	ListObjectsV2Command,
 	PutObjectCommand,
+	GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
 import { getTokens } from "./auth";
 import { cognitoConfig } from "../config/cognito";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 let s3Client = null;
 let profileBucket = process.env.REACT_APP_S3_BUCKET_PROFILE;
@@ -87,7 +89,7 @@ export const listProfiles = async () => {
 			return []; // Return empty array as there are no files yet
 		}
 
-		return response.Contents.filter(item => !item.Key.endsWith("/"));
+		return response.Contents.filter((item) => !item.Key.endsWith("/"));
 	} catch (error) {
 		console.error("Error listing files:", error);
 		throw error;
@@ -100,7 +102,10 @@ export const uploadProfilePicture = async (file, profileId) => {
 		const userId = await getUserId();
 
 		const fileExtension = file.name.split(".").pop().toLowerCase();
-		const timestamp = new Date().toISOString().replace(/[:\-T]/g, '').split('.')[0]; // Format: YYYYMMDDHHMMSS
+		const timestamp = new Date()
+			.toISOString()
+			.replace(/[:\-T]/g, "")
+			.split(".")[0]; // Format: YYYYMMDDHHMMSS
 
 		const command = new PutObjectCommand({
 			Bucket: profileBucket,
@@ -117,6 +122,29 @@ export const uploadProfilePicture = async (file, profileId) => {
 		return imageUrl;
 	} catch (error) {
 		console.error("Error uploading profile picture:", error);
+		throw error;
+	}
+};
+
+export const getSignedImageUrl = async (imageUrl) => {
+	try {
+		const client = await getS3Client();
+
+		// Extract bucket and key from the full S3 URL
+		const url = new URL(imageUrl);
+		const bucket = url.hostname.split(".")[0];
+		const key = decodeURIComponent(url.pathname.substring(1));
+
+		const command = new GetObjectCommand({
+			Bucket: bucket,
+			Key: key,
+		});
+
+		// Get signed URL that expires in 5 minutes
+		const signedUrl = await getSignedUrl(client, command, { expiresIn: 300 });
+		return signedUrl;
+	} catch (error) {
+		console.error("Error getting signed URL:", error);
 		throw error;
 	}
 };
