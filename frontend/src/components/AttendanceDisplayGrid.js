@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { getUserId } from "../services/profilepics";
+import { getUserId, getSignedImageUrl } from "../services/profilepics";
 import { Alert, Collapse, IconButton } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Modal from "@mui/material/Modal";
@@ -14,6 +14,7 @@ const AttendanceDisplayGrid = () => {
 	const [error, setError] = useState(null);
 	const [expandedDates, setExpandedDates] = useState({});
 	const [previewImageUrl, setPreviewImageUrl] = useState(null);
+	const [signedImageUrl, setSignedImageUrl] = useState(null);
 	const columns = [
 		{
 			field: "profile_id",
@@ -43,10 +44,9 @@ const AttendanceDisplayGrid = () => {
 			headerName: "Check-in Image",
 			width: 200,
 			renderCell: (params) => {
-				console.log("params: ", params);
 				return params.row.check_in_image ? (
 					<button
-						onClick={() => setPreviewImageUrl(params.row.check_in_image)}
+						onClick={() => handlePreviewClick(params.row.check_in_image)}
 						style={{
 							background: "none",
 							border: "none",
@@ -63,9 +63,6 @@ const AttendanceDisplayGrid = () => {
 	];
 
 	function processData(profiles, attendanceRecords) {
-		console.log("Processing - Profiles:", profiles);
-		console.log("Processing - Attendance Records:", attendanceRecords);
-
 		const attendanceByDate = attendanceRecords.reduce((acc, record) => {
 			const date = new Date(record.timestamp);
 			const dateKey = date.toLocaleDateString("en-US", {
@@ -88,8 +85,6 @@ const AttendanceDisplayGrid = () => {
 			});
 			return acc;
 		}, {});
-
-		console.log("Attendance by date:", attendanceByDate);
 
 		// Create a map of dates and their corresponding rows
 		const groupedData = {};
@@ -164,6 +159,16 @@ const AttendanceDisplayGrid = () => {
 		}));
 	};
 
+	const handlePreviewClick = async (imageUrl) => {
+		try {
+			const signedUrl = await getSignedImageUrl(imageUrl);
+			setSignedImageUrl(signedUrl);
+			setPreviewImageUrl(imageUrl);
+		} catch (error) {
+			console.error("Error getting signed URL for preview:", error);
+		}
+	};
+
 	if (error) return <div>Error: {error}</div>;
 
 	return (
@@ -236,7 +241,13 @@ const AttendanceDisplayGrid = () => {
 					})
 				)}
 			</Box>
-			<Modal open={!!previewImageUrl} onClose={() => setPreviewImageUrl(null)}>
+			<Modal
+				open={!!previewImageUrl}
+				onClose={() => {
+					setPreviewImageUrl(null);
+					setSignedImageUrl(null);
+				}}
+			>
 				<Box
 					sx={{
 						position: "absolute",
@@ -249,7 +260,11 @@ const AttendanceDisplayGrid = () => {
 						p: 4,
 					}}
 				>
-					<img src={previewImageUrl} alt="Preview" style={{ width: "100%" }} />
+					{signedImageUrl ? (
+						<img src={signedImageUrl} alt="Preview" style={{ width: "100%" }} />
+					) : (
+						<div>Loading image...</div>
+					)}
 				</Box>
 			</Modal>
 		</>
