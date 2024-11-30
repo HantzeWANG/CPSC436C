@@ -1,5 +1,5 @@
-import './App.css';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import "./App.css";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AttendanceDisplayGrid from "./components/AttendanceDisplayGrid";
 import {
 	BrowserRouter as Router,
@@ -15,9 +15,9 @@ import DashBoard from "./components/DashBoard";
 import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import TouchIDVerification from "./components/TouchIDVerification";
+import TouchIDRegistration from "./components/TouchIDRegistration";
 import Layout from "./components/Layout";
-
+import AdminRoute from "./components/AdminRoute";
 
 const theme = createTheme();
 function App() {
@@ -30,7 +30,7 @@ function App() {
 						<Route path="/login" element={<Login />} />
 						<Route path="/callback" element={<AuthCallback />} />
 
-						{/* Protected routes - require authentication */}
+						{/* Routes protected by Cognito */}
 						<Route
 							path="/welcome"
 							element={
@@ -39,7 +39,6 @@ function App() {
 								</ProtectedRoute>
 							}
 						/>
-
 						<Route
 							path="/checkin"
 							element={
@@ -48,45 +47,38 @@ function App() {
 								</ProtectedRoute>
 							}
 						/>
-
-						{/* Only used for initial Touch ID registration */}
 						<Route
-							path="/verify-dashboard"
+							path="/register-touchid"
 							element={
 								<ProtectedRoute>
-									<TouchIDVerification />
+									<TouchIDRegistration />
 								</ProtectedRoute>
 							}
 						/>
 
-                        <Route
-                            path="/dashboard"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout showSideNav={true}>
-                                        <DashBoard/>
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-
-                        <Route path="/attendance-detail" element={
-                            <ProtectedRoute>
-                                <Layout showSideNav={true}>
-                                    <AttendanceDisplayGrid/>
-                                </Layout>
-                            </ProtectedRoute>}
-                        />
-
-						<Route PATH="/detailedAttendance" element={
-							<AttendanceDisplayGrid />
-						}
+						{/* Routes protected by both Cognito and TouchID */}
+						<Route
+							path="/dashboard"
+							element={
+								<AdminRoute>
+									<Layout showSideNav={true}>
+										<DashBoard />
+									</Layout>
+								</AdminRoute>
+							}
+						/>
+						<Route
+							path="/attendance-detail"
+							element={
+								<AdminRoute>
+									<Layout showSideNav={true}>
+										<AttendanceDisplayGrid />
+									</Layout>
+								</AdminRoute>
+							}
 						/>
 
-						{/* Redirect root to login */}
 						<Route path="/" element={<Navigate to="/login" replace />} />
-
-						{/* Catch all - redirect to login */}
 						<Route path="*" element={<Navigate to="/login" replace />} />
 					</Routes>
 				</div>

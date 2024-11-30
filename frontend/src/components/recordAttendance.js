@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { uploadAttedancePhoto } from "../services/api";
 import TextField from "@mui/material/TextField";
-import HomeIcon from '@mui/icons-material/Home';
-import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
+import HomeIcon from "@mui/icons-material/Home";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { AppBar, Toolbar } from "@mui/material";
-import Container from '@mui/material/Container';
+import Container from "@mui/material/Container";
+import { touchIDAuth } from "../services/touchIDAuth";
 
 export const WebcamCapture = () => {
 	const navigate = useNavigate();
@@ -19,10 +20,10 @@ export const WebcamCapture = () => {
 	const [profileID, setProfileID] = useState("");
 
 	const handleDevices = (mediaDevices) => {
-		const list = mediaDevices.filter(({ kind }) => kind === "videoinput")
-		setDevices(list)
-		setDeviceId(list[0].deviceId)
-	}
+		const list = mediaDevices.filter(({ kind }) => kind === "videoinput");
+		setDevices(list);
+		setDeviceId(list[0].deviceId);
+	};
 
 	const handleDeviceChange = (event) => {
 		setDeviceId(event.target.value);
@@ -36,17 +37,44 @@ export const WebcamCapture = () => {
 		navigate("/welcome");
 	};
 
+	useEffect(() => {
+		touchIDAuth.clearProtectedAreaState();
+
+		const handleNavigation = () => {
+			navigate("/welcome", { replace: true });
+		};
+
+		window.addEventListener("popstate", handleNavigation);
+
+		window.history.pushState(null, "", "/checkin");
+
+		return () => {
+			window.removeEventListener("popstate", handleNavigation);
+		};
+	}, [navigate]);
+
 	React.useEffect(() => {
 		navigator.mediaDevices.enumerateDevices().then(handleDevices);
 	}, []);
 
 	return (
 		<>
-			<AppBar position="static" sx={{ background: '#fff', marginBottom: '20px' }}>
+			<AppBar
+				position="static"
+				sx={{ background: "#fff", marginBottom: "20px" }}
+			>
 				<Container maxWidth="xl">
 					<Toolbar disableGutters>
-						<HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#000', cursor: 'pointer' }} onClick={handleGoBackHomePage} />
-						<h2 style={{ color: '#000', width: '100%' }}>Sign Attendance</h2>
+						<HomeIcon
+							sx={{
+								display: { xs: "none", md: "flex" },
+								mr: 1,
+								color: "#000",
+								cursor: "pointer",
+							}}
+							onClick={handleGoBackHomePage}
+						/>
+						<h2 style={{ color: "#000", width: "100%" }}>Sign Attendance</h2>
 					</Toolbar>
 				</Container>
 			</AppBar>
@@ -66,9 +94,9 @@ export const WebcamCapture = () => {
 					{({ getScreenshot }) => (
 						<div
 							style={{
-								position: 'fixed',
-								right: '10px',
-								bottom: '10px'
+								position: "fixed",
+								right: "10px",
+								bottom: "10px",
 							}}
 						>
 							<Button
@@ -77,10 +105,13 @@ export const WebcamCapture = () => {
 									const imageBase64 = getScreenshot();
 									console.log(imageBase64);
 									await uploadAttedancePhoto(imageBase64, profileID);
-									const { statusCode, message } = await uploadAttedancePhoto(imageBase64, profileID);
-        							alert(`Status: ${statusCode}\nMessage: ${message}`);
+									const { statusCode, message } = await uploadAttedancePhoto(
+										imageBase64,
+										profileID
+									);
+									alert(`Status: ${statusCode}\nMessage: ${message}`);
 								}}
-								sx={{ background: '#000' }}
+								sx={{ background: "#000" }}
 							>
 								Capture photo
 							</Button>
@@ -96,27 +127,27 @@ export const WebcamCapture = () => {
 					value={profileID}
 					onChange={handleNameChange}
 					sx={{
-						width: '210px',
-						margin: '10px 0'
+						width: "210px",
+						margin: "10px 0",
 					}}
 				/>
-				<div style={{ display: 'flex', justifyContent: 'center' }}>
-				<div style={{ margin: '10px 0', width: "210px" }}>
-					<FormControl fullWidth>
-						<InputLabel id="demo-simple-select-label">camera</InputLabel>
-						<Select
-							value={deviceId}
-							label="camera"
-							onChange={handleDeviceChange}
+				<div style={{ display: "flex", justifyContent: "center" }}>
+					<div style={{ margin: "10px 0", width: "210px" }}>
+						<FormControl fullWidth>
+							<InputLabel id="demo-simple-select-label">camera</InputLabel>
+							<Select
+								value={deviceId}
+								label="camera"
+								onChange={handleDeviceChange}
 							>
-							{devices.map((device, key) => (
-								<MenuItem value={device.deviceId}>
-									{device.label || `Device ${key + 1}`}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</div>
+								{devices.map((device, key) => (
+									<MenuItem value={device.deviceId}>
+										{device.label || `Device ${key + 1}`}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</div>
 				</div>
 			</div>
 		</>

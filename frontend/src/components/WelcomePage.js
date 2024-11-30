@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { touchIDAuth } from "../services/touchIDAuth";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import Button from "@mui/material/Button";
@@ -9,45 +10,34 @@ const WelcomePage = () => {
 	const navigate = useNavigate();
 	const [error, setError] = useState("");
 
+	useEffect(() => {
+		// Clear protected area state when entering welcome page
+		touchIDAuth.clearProtectedAreaState();
+	}, []);
+
 	const handleDashboardAccess = async () => {
 		try {
-			if (typeof window !== "undefined" && window.PublicKeyCredential) {
-				const available =
-					await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-				if (!available) {
-					setError("Touch ID is not available on this device");
-					return;
-				}
+			await touchIDAuth.checkSupport();
 
-				const registered = localStorage.getItem("touchIDRegistered");
-				if (!registered) {
-					navigate("/verify-dashboard"); // Only navigate to registration if needed
-					return;
-				}
+			if (!touchIDAuth.isRegistered()) {
+				navigate("/register-touchid");
+				return;
+			}
 
-				// Verify with Touch ID
-				const challenge = new Uint8Array(32);
-				window.crypto.getRandomValues(challenge);
-
-				const publicKeyCredentialRequestOptions = {
-					challenge,
-					rpId: window.location.hostname,
-					timeout: 60000,
-					userVerification: "required",
-				};
-
-				await navigator.credentials.get({
-					publicKey: publicKeyCredentialRequestOptions,
-				});
-
-				// If verification successful, navigate to dashboard
+			try {
+				await touchIDAuth.verify();
 				navigate("/dashboard");
-			} else {
-				setError("WebAuthn is not supported in this browser");
+			} catch (verifyError) {
+				touchIDAuth.clearRegistration();
+				navigate("/register-touchid");
 			}
 		} catch (err) {
-			console.error("Verification failed:", err);
-			setError("Verification failed. Please try again.");
+			console.error("Access failed:", err);
+			setError(err.message);
+
+			if (err.message === "TouchID registration expired") {
+				navigate("/register-touchid");
+			}
 		}
 	};
 
