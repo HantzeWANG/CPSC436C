@@ -82,8 +82,9 @@ def invoke_lambda(path, client=None):
         )
         response_payload = json.loads(response['Payload'].read())
         status_code = response_payload.get('statusCode', 500)
+        status = response_payload.get('status', 'Unknown error')
         body = response_payload.get('body', 'Unknown error')
-        return status_code, body
+        return status_code, status, body
     except ClientError as e:
         raise RuntimeError(f"Error invoking Lambda: {e}")
 
@@ -148,8 +149,8 @@ def upload_attendance_picture(request):
         aws_secret_access_key=response['Credentials']['SecretKey'],
         aws_session_token=response['Credentials']['SessionToken']
     )
-    response_status, response_body = invoke_lambda(attendance_picture_url, lambda_client)
-    return Response({'statusCode': response_status, 'message': response_body}, status=200)
+    response_status_code, response_status, response_body = invoke_lambda(attendance_picture_url, lambda_client)
+    return Response({'statusCode': response_status_code, 'status': response_status, 'message': response_body}, status=200)
 
 
 @api_view(['POST'])
