@@ -21,8 +21,9 @@ def lambda_handler(event, context):
         file_name = attend_key.split("/")[-1]
         file_name_stripped = file_name.split(".")[0]
         components = file_name_stripped.split("_")
+        admin_id = components[0]
         rds_key = components[1]
-        pfp_path = get_path_from_db(rds_key)
+        pfp_path = get_path_from_db(admin_id, rds_key)
 
         if not pfp_path:
             return {
@@ -145,7 +146,7 @@ def handle_rekognition(bucket1_name, img1_key, bucket2_name, img2_key):
 # Get S3 url for default profile image from RDS
 
 
-def get_path_from_db(profile_id):
+def get_path_from_db(admin_id, profile_id):
     connection = None
     try:
         # Fetch database credentials from environment variables
@@ -164,7 +165,7 @@ def get_path_from_db(profile_id):
         cursor = connection.cursor()
 
         # Fix the tuple syntax and fetch data
-        cursor.execute("SELECT profile_image FROM people_profile WHERE profile_id = %s", (profile_id,))
+        cursor.execute("SELECT profile_image FROM people_profile WHERE profile_id = %s AND admin_id = %s", (profile_id, admin_id))
         result_tuple = cursor.fetchall()
         
         if not result_tuple:

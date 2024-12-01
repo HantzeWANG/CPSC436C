@@ -150,6 +150,10 @@ def upload_attendance_picture(request):
         aws_session_token=response['Credentials']['SessionToken']
     )
     response_status_code, response_status, response_body = invoke_lambda(attendance_picture_url, lambda_client)
+    print(f"Lambda invoked for {attendance_picture_url} \n"
+      f"Status Code: {response_status_code}\n"
+      f"Status: {response_status}\n"
+      f"Message: {response_body}")
     return Response({'statusCode': response_status_code, 'status': response_status, 'message': response_body}, status=200)
 
 
