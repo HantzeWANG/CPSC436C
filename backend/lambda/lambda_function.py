@@ -27,6 +27,7 @@ def lambda_handler(event, context):
         if not pfp_path:
             return {
                 "statusCode": 404,
+                "status": "failure",
                 "body": f"Profile picture with ID {rds_key} not found"
             }
 
@@ -43,21 +44,25 @@ def lambda_handler(event, context):
             if error_code == 'InvalidS3ObjectException':
                 return {
                     "statusCode": 404,
+                    "status": "failure",
                     "body": f"One or both of the S3 objects could not be found: {error.response['Error']['Message']}"
                 }
             elif error_code == 'InvalidParameterException':
                 return {
                     "statusCode": 400,
+                    "status": "failure",
                     "body": "No face detected in one or both images"
                 }
             elif error_code == 'AccessDeniedException':
                 return {
                     "statusCode": 403,
+                    "status": "failure",
                     "body": "Access denied. Check your S3 bucket permissions."
                 }
             else:
                 return {
                     "statusCode": 500,
+                    "status": "failure",
                     "body": f"A Rekognition error occurred: {error.response['Error']['Message']}"
                 }
 
@@ -71,11 +76,13 @@ def lambda_handler(event, context):
                 print(f"[ERROR] Database insertion error: {insertion_err}")
                 return {
                     "statusCode": 400,
+                    "status": "failure",
                     "body": f"Error inserting data: {insertion_err}"
                 }
             print("[INFO] Face match successful, check-in recorded")
             return {
                 "statusCode": 200,
+                "status": "success",
                 "body": "Face match successful, check-in recorded"
             }
         # Case 2: Failed facial comparison
@@ -83,6 +90,7 @@ def lambda_handler(event, context):
             print("[INFO] Face match failed")
             return {
                 "statusCode": 200,
+                "status": "failure",
                 "body": "Face match failed"
             }
 
@@ -90,6 +98,7 @@ def lambda_handler(event, context):
         print(f"[ERROR] Unexpected error: {str(e)}")
         return {
             "statusCode": 500,
+            "status": "failure",
             "body": f"An error occurred: {str(e)}"
         }
 
@@ -103,33 +112,29 @@ def handle_rekognition(bucket1_name, img1_key, bucket2_name, img2_key):
         source_faces = client.detect_faces(
             Image={'S3Object': {'Bucket': bucket1_name, 'Name': img1_key}}
         )
-
+        
         if not source_faces.get('FaceDetails'):
             print("[ERROR] No face detected in attendance photo")
             return None, ClientError(
-                {'Error': {'Code': 'InvalidParameterException',
-                           'Message': 'No face detected in attendance photo'}},
+                {'Error': {'Code': 'InvalidParameterException', 'Message': 'No face detected in attendance photo'}},
                 'CompareFaces'
             )
-
+        
         target_faces = client.detect_faces(
             Image={'S3Object': {'Bucket': bucket2_name, 'Name': img2_key}}
         )
-
+        
         if not target_faces.get('FaceDetails'):
             print("[ERROR] No face detected in profile photo")
             return None, ClientError(
-                {'Error': {'Code': 'InvalidParameterException',
-                           'Message': 'No face detected in profile photo'}},
+                {'Error': {'Code': 'InvalidParameterException', 'Message': 'No face detected in profile photo'}},
                 'CompareFaces'
             )
 
         comparison_response = client.compare_faces(
             SimilarityThreshold=80,
-            SourceImage={'S3Object': {
-                'Bucket': bucket1_name, 'Name': img1_key}},
-            TargetImage={'S3Object': {
-                'Bucket': bucket2_name, 'Name': img2_key}}
+            SourceImage={'S3Object': {'Bucket': bucket1_name, 'Name': img1_key}},
+            TargetImage={'S3Object': {'Bucket': bucket2_name, 'Name': img2_key}}
         )
         return comparison_response, None
 
@@ -159,14 +164,13 @@ def get_path_from_db(profile_id):
         cursor = connection.cursor()
 
         # Fix the tuple syntax and fetch data
-        cursor.execute(
-            "SELECT profile_image FROM people_profile WHERE profile_id = %s", (profile_id,))
+        cursor.execute("SELECT profile_image FROM people_profile WHERE profile_id = %s", (profile_id,))
         result_tuple = cursor.fetchall()
-
+        
         if not result_tuple:
             print(f"[ERROR] No profile found for ID: {profile_id}")
             return None
-
+            
         return result_tuple[0][0]
 
     except Exception as e:
@@ -188,7 +192,7 @@ def insert_data_into_db(profile_id, photo_url, timestamp):
         db_user = os.environ["DB_USER"]
         db_password = os.environ["DB_PASSWORD"]
         db_name = os.environ["DB_NAME"]
-
+        
         # Connect to the database
         connection = pymysql.connect(
             host=db_host,
@@ -197,7 +201,7 @@ def insert_data_into_db(profile_id, photo_url, timestamp):
             database=db_name
         )
         cursor = connection.cursor()
-
+        
         # Execute the query
         cursor.execute(
             "INSERT INTO people_attendance (profile_id, photo_url, timestamp) VALUES (%s, %s, %s)",
@@ -205,7 +209,7 @@ def insert_data_into_db(profile_id, photo_url, timestamp):
         )
         connection.commit()
         return None
-
+    
     except Exception as e:
         print(f"[ERROR] Database insertion error: {str(e)}")
         return str(e)

@@ -1,23 +1,35 @@
 import React, { useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { uploadAttedancePhoto } from "../services/api";
-import TextField from "@mui/material/TextField";
 import HomeIcon from "@mui/icons-material/Home";
-import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
-import { AppBar, Toolbar } from "@mui/material";
 import Container from "@mui/material/Container";
 import { touchIDAuth } from "../services/touchIDAuth";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { 
+	TextField, 
+	Button, 
+	Select, 
+	MenuItem, 
+	InputLabel, 
+	FormControl,
+	AppBar, 
+	Toolbar, 
+	CircularProgress, 
+	Box, 
+	Typography, 
+	Modal 
+} from "@mui/material";
 
 export const WebcamCapture = () => {
 	const navigate = useNavigate();
 	const [deviceId, setDeviceId] = useState({});
 	const [devices, setDevices] = useState([]);
 	const [profileID, setProfileID] = useState("");
+	const [error, setError] = useState(false);
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadResult, setUploadResult] = useState(null);
 
 	const handleDevices = (mediaDevices) => {
 		const list = mediaDevices.filter(({ kind }) => kind === "videoinput");
@@ -101,20 +113,82 @@ export const WebcamCapture = () => {
 						>
 							<Button
 								variant="contained"
+								disabled={isUploading}
 								onClick={async () => {
+									if (!profileID || profileID.trim() === "") {
+										setError(true);
+										return;
+									}
+									setError(false);
+									setIsUploading(true);
+									setUploadResult(null);
 									const imageBase64 = getScreenshot();
 									console.log(imageBase64);
 									await uploadAttedancePhoto(imageBase64, profileID);
-									const { statusCode, message } = await uploadAttedancePhoto(
+									const { statusCode, status, message } = await uploadAttedancePhoto(
 										imageBase64,
 										profileID
 									);
-									alert(`Status: ${statusCode}\nMessage: ${message}`);
+									if (statusCode === 200 && status === "success") {
+										setUploadResult({ success: true, message });
+									} else {
+										setUploadResult({ success: false, message: "Face match failed, please try again" });
+									}
+									setIsUploading(false);
 								}}
 								sx={{ background: "#000" }}
 							>
 								Capture photo
 							</Button>
+
+							<Modal open={isUploading || uploadResult !== null} aria-labelledby="modal-title">
+								<Box
+									sx={{
+										display: "flex",
+										flexDirection: "column",
+										alignItems: "center",
+										justifyContent: "center",
+										position: "fixed",
+										top: 0,
+										left: 0,
+										width: "100%",
+										height: "100%",
+										bgcolor: "rgba(255, 255, 255, 0.8)",
+										zIndex: 1300,
+									}}
+								>
+									{isUploading && (
+										<>
+											<CircularProgress size={60} />
+											<Typography variant="h6" sx={{ mt: 2 }}>
+												Uploading...
+											</Typography>
+										</>
+									)}
+									{uploadResult && (
+										<>
+											{uploadResult.success ? (
+												<CheckCircleIcon color="success" sx={{ fontSize: 60 }} />
+											) : (
+												<CancelIcon color="error" sx={{ fontSize: 60 }} />
+											)}
+											<Typography
+												variant="h6"
+												sx={{ mt: 2, textAlign: "center", px: 2 }}
+											>
+												{uploadResult.message}
+											</Typography>
+											<Button
+												variant="contained"
+												sx={{ mt: 3 }}
+												onClick={() => setUploadResult(null)}
+											>
+												OK
+											</Button>
+										</>
+									)}
+								</Box>
+							</Modal>
 						</div>
 					)}
 				</Webcam>
@@ -124,8 +198,11 @@ export const WebcamCapture = () => {
 					required
 					id="profileId"
 					label="profile ID"
+					variant="outlined"
 					value={profileID}
 					onChange={handleNameChange}
+					error={error}
+					helperText={error ? "Please enter a valid profile ID" : ""}
 					sx={{
 						width: "210px",
 						margin: "10px 0",
