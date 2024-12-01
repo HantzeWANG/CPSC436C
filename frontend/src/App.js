@@ -12,11 +12,11 @@ import Login from "./components/Login";
 import AuthCallback from "./components/AuthCallback";
 import { WebcamCapture } from "./components/recordAttendance";
 import DashBoard from "./components/DashBoard";
-import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDVerification from "./components/TouchIDVerification";
 import Layout from "./components/Layout";
+import Analysis from "./components/Analysis";
 
 
 const theme = createTheme();
@@ -27,6 +27,7 @@ function App() {
 				<div className="App">
 					<Routes>
 						{/* Public routes */}
+						{/* TODO: log out to here*/}
 						<Route path="/login" element={<Login />} />
 						<Route path="/callback" element={<AuthCallback />} />
 
@@ -78,10 +79,14 @@ function App() {
                             </ProtectedRoute>}
                         />
 
-						<Route PATH="/detailedAttendance" element={
-							<AttendanceDisplayGrid />
-						}
+						<Route path="/analysis" element={
+							<ProtectedRoute>
+								<Layout showSideNav={true}>
+									<Analysis/>
+								</Layout>
+							</ProtectedRoute>}
 						/>
+
 
 						{/* Redirect root to login */}
 						<Route path="/" element={<Navigate to="/login" replace />} />
