@@ -132,7 +132,7 @@ export const WebcamCapture = () => {
 									if (statusCode === 200 && status === "success") {
 										setUploadResult({ success: true, message });
 									} else {
-										setUploadResult({ success: false, message: "Face match failed" });
+										setUploadResult({ success: false, message: "Face match failed, please try again" });
 									}
 									setIsUploading(false);
 								}}
