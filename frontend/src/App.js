@@ -54,7 +54,10 @@ function App() {
 							path="/register-touchid"
 							element={
 								<ProtectedRoute>
-									<TouchIDRegistration />
+									<Layout showSideNav={true}>
+
+										<TouchIDRegistration />
+									</Layout>
 								</ProtectedRoute>
 							}
 						/>

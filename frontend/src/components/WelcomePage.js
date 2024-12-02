@@ -109,7 +109,7 @@ const WelcomePage = () => {
 						color: "#000",
 					}}
 				>
-					TAKE ATTENDANCE
+					SIGN ATTENDANCE
 				</Button>
 			</div>
 			{error && (
