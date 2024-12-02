@@ -12,12 +12,12 @@ import Login from "./components/Login";
 import AuthCallback from "./components/AuthCallback";
 import { WebcamCapture } from "./components/recordAttendance";
 import DashBoard from "./components/DashBoard";
-import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDRegistration from "./components/TouchIDRegistration";
 import Layout from "./components/Layout";
 import AdminRoute from "./components/AdminRoute";
+import DataVisualizationAnalyzer from "./components/Visualization/DataVisualizationAnalyzer";
 
 const theme = createTheme();
 function App() {
@@ -27,6 +27,7 @@ function App() {
 				<div className="App">
 					<Routes>
 						{/* Public routes */}
+						{/* TODO: log out to here*/}
 						<Route path="/login" element={<Login />} />
 						<Route path="/callback" element={<AuthCallback />} />
 
@@ -76,6 +77,13 @@ function App() {
 									</Layout>
 								</AdminRoute>
 							}
+						/>
+						<Route path="/analysis" element={
+						<ProtectedRoute>
+							<Layout showSideNav={true}>
+								<DataVisualizationAnalyzer />
+							</Layout>
+						</ProtectedRoute>}
 						/>
 
 						<Route path="/" element={<Navigate to="/login" replace />} />

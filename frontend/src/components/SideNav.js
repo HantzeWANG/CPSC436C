@@ -4,6 +4,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AttendanceIcon from '@mui/icons-material/DateRange';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+
 
 const SideNav = () => {
     return (
@@ -24,6 +26,10 @@ const SideNav = () => {
                 <li className="sidenav-item">
                     <AttendanceIcon style={{ marginRight: '8px' }} />
                     <Link to="/attendance-detail">Attendance</Link>
+                </li>
+                <li className="sidenav-item">
+                    <AssessmentIcon style={{ marginRight: '8px' }} />
+                    <Link to="/analysis">Analysis</Link>
                 </li>
                 {/*TODO: sign out*/}
                 {/*<li></li>*/}
