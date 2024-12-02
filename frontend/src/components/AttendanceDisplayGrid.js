@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { getUserId, getSignedImageUrl } from "../services/profilepics";
-import { Alert, Collapse, IconButton } from "@mui/material";
+import { Alert, Collapse, IconButton, CircularProgress } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Modal from "@mui/material/Modal";
 
@@ -11,6 +11,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 const AttendanceDisplayGrid = () => {
 	const [rows, setRows] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [expandedDates, setExpandedDates] = useState({});
 	const [previewImageUrl, setPreviewImageUrl] = useState(null);
@@ -31,7 +32,7 @@ const AttendanceDisplayGrid = () => {
 			headerName: "Attendance",
 			width: 200,
 			valueGetter: (params) => {
-				return params ? "✅" : "❌";
+				return params.value ? "✅" : "❌";
 			},
 		},
 		{
@@ -146,6 +147,8 @@ const AttendanceDisplayGrid = () => {
 			} catch (error) {
 				console.error("Error fetching data:", error);
 				setError(error.message);
+			} finally {
+				setLoading(false);
 			}
 		};
 
@@ -170,6 +173,8 @@ const AttendanceDisplayGrid = () => {
 	};
 
 	if (error) return <div>Error: {error}</div>;
+
+	if (loading) return <div style={{ textAlign: "center", margin: "20px" }}><CircularProgress /></div>;
 
 	return (
 		<>
