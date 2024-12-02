@@ -32,7 +32,7 @@ const AttendanceDisplayGrid = () => {
 			headerName: "Attendance",
 			width: 200,
 			valueGetter: (params) => {
-				return params.value ? "✅" : "❌";
+				return params ? "✅" : "❌";
 			},
 		},
 		{
