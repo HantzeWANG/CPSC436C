@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { uploadAttedancePhoto } from "../services/api";
-import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import { touchIDAuth } from "../services/touchIDAuth";
@@ -45,10 +44,6 @@ export const WebcamCapture = () => {
 		setProfileID(event.target.value);
 	};
 
-	const handleGoBackHomePage = () => {
-		navigate("/welcome");
-	};
-
 	useEffect(() => {
 		touchIDAuth.clearProtectedAreaState();
 
@@ -77,15 +72,6 @@ export const WebcamCapture = () => {
 			>
 				<Container maxWidth="xl">
 					<Toolbar disableGutters>
-						<HomeIcon
-							sx={{
-								display: { xs: "none", md: "flex" },
-								mr: 1,
-								color: "#000",
-								cursor: "pointer",
-							}}
-							onClick={handleGoBackHomePage}
-						/>
 						<h2 style={{ color: "#000", width: "100%" }}>Sign Attendance</h2>
 					</Toolbar>
 				</Container>

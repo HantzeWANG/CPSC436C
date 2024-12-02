@@ -5,16 +5,12 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
 import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
-import AttendanceDisplayGrid from "./AttendanceDisplayGrid";
-import HomeIcon from "@mui/icons-material/Home";
-import { useNavigate } from "react-router-dom";
 import { AppBar, Toolbar } from "@mui/material";
 import Container from "@mui/material/Container";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const DashBoard = () => {
-	const navigate = useNavigate();
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -126,10 +122,6 @@ const DashBoard = () => {
 	if (loading) return <div>Loading files...</div>;
 	if (error) return <div>Error: {error}</div>;
 
-	const handleGoBackHomePage = () => {
-		navigate("/welcome");
-	};
-
 	return (
 		<div>
 			<AppBar
@@ -138,16 +130,6 @@ const DashBoard = () => {
 			>
 				<Container maxWidth="xl">
 					<Toolbar disableGutters>
-						<HomeIcon
-							sx={{
-								display: { xs: "none", md: "flex" },
-								mr: 1,
-								color: "#000",
-								cursor: "pointer",
-							}}
-							onClick={handleGoBackHomePage}
-						/>
-
 						<h2 style={{ color: "#000", width: "100%" }}>Dashboard</h2>
 					</Toolbar>
 				</Container>

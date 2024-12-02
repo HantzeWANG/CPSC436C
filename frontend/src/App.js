@@ -12,7 +12,6 @@ import Login from "./components/Login";
 import AuthCallback from "./components/AuthCallback";
 import { WebcamCapture } from "./components/recordAttendance";
 import DashBoard from "./components/DashBoard";
-import DragDrop from "./components/DragDrop";
 import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDRegistration from "./components/TouchIDRegistration";
@@ -35,7 +34,9 @@ function App() {
 							path="/welcome"
 							element={
 								<ProtectedRoute>
-									<WelcomePage />
+									<Layout showSideNav={true}>
+										<WelcomePage />
+									</Layout>
 								</ProtectedRoute>
 							}
 						/>
@@ -43,7 +44,9 @@ function App() {
 							path="/checkin"
 							element={
 								<ProtectedRoute>
-									<WebcamCapture />
+									<Layout showSideNav={true}>
+										<WebcamCapture />
+									</Layout>
 								</ProtectedRoute>
 							}
 						/>

@@ -51,24 +51,23 @@ const WelcomePage = () => {
 			style={{
 				display: "flex",
 				flexDirection: "column",
-				height: "100vh",
+				height: "calc(100vh - 40px)",
 				justifyContent: "center",
 			}}
 		>
 			<Typography variant="h3" component="h1" gutterBottom>
-				Welcome to Attendance System
+				Effortless Attendance Management
 			</Typography>
 
 			<div style={{ display: "flex", justifyContent: "center" }}>
 				<Typography gutterBottom sx={{ maxWidth: "50%" }}>
-					Register by December 13, initiate your deposits or transfersRegister
-					by December 13, initiate your deposits or transfersRegister by
-					December 13, initiate your deposits or transfersRegister by December
-					13, initiate your deposits or transfersRegister by December 13,
-					initiate your deposits or transfersRegister by December 13, initiate
-					your deposits or transfersRegister by December 13, initiate your
-					deposits or transfersRegister by December 13, initiate your deposits
-					or transfers
+					Welcome to the smarter way of tracking attendance. 
+				</Typography>
+			</div>
+
+			<div style={{ display: "flex", justifyContent: "center" }}>
+				<Typography gutterBottom sx={{ maxWidth: "50%" }}>
+					Harness the power of AI-driven facial recognition to simplify and secure your attendance process. No cards, no pens – just you.
 				</Typography>
 			</div>
 
