@@ -183,9 +183,7 @@ def get_profiles(request, profile_id):
 @api_view(['GET'])
 def get_attendance_by_admin(request, admin_id):
     try:
-
         profiles = Profile.objects.filter(admin_id=admin_id)
-
         attendance = Attendance.objects.filter(profile__in=profiles)
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data, status=200)

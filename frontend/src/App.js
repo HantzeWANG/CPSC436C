@@ -16,9 +16,8 @@ import WelcomePage from "./components/WelcomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TouchIDRegistration from "./components/TouchIDRegistration";
 import Layout from "./components/Layout";
-import Analysis from "./components/Analysis";
-
 import AdminRoute from "./components/AdminRoute";
+import DataVisualizationAnalyzer from "./components/Visualization/DataVisualizationAnalyzer";
 
 const theme = createTheme();
 function App() {
@@ -82,7 +81,7 @@ function App() {
 						<Route path="/analysis" element={
 						<ProtectedRoute>
 							<Layout showSideNav={true}>
-								<Analysis/>
+								<DataVisualizationAnalyzer />
 							</Layout>
 						</ProtectedRoute>}
 						/>
