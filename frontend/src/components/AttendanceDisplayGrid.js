@@ -10,13 +10,13 @@ import { getUserId, getSignedImageUrl } from "../services/profilepics";
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function AttendanceCalendar() {
-  const [selectedDate, setSelectedDate] = React.useState(dayjs().format("YYYY-MM-DD")); // Default to today
+  const [selectedDate, setSelectedDate] = React.useState(dayjs().format("YYYY-MM-DD"));
   const [rows, setRows] = React.useState([]);
   const [filteredRows, setFilteredRows] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
-  const [previewImageUrl, setPreviewImageUrl] = React.useState(null); // For modal preview
-  const [signedImageUrl, setSignedImageUrl] = React.useState(null); // Store signed URL
+  const [previewImageUrl, setPreviewImageUrl] = React.useState(null);
+  const [signedImageUrl, setSignedImageUrl] = React.useState(null);
 
   const columns = [
     { field: "profile_id", headerName: "ID", width: 150 },
@@ -62,7 +62,6 @@ export default function AttendanceCalendar() {
 		acc[date] = new Map();
 	  }
   
-	  // Only store the latest record for each profile ID
 	  if (
 		!acc[date].has(profileId) ||
 		new Date(record.timestamp) > new Date(acc[date].get(profileId).timestamp)
@@ -70,14 +69,13 @@ export default function AttendanceCalendar() {
 		acc[date].set(profileId, {
 		  timestamp: record.timestamp,
 		  photo: record.photo_url,
-		  present: !!record.timestamp, // Mark as present if a record exists
+		  present: !!record.timestamp,
 		});
 	  }
   
 	  return acc;
 	}, {});
   
-	// Create rows grouped by dates
 	const groupedRows = {};
 	Object.keys(attendanceByDate).forEach((date) => {
 	  groupedRows[date] = profiles.map((profile) => {
@@ -89,7 +87,7 @@ export default function AttendanceCalendar() {
 		  check_in_time: attendanceInfo
 			? new Date(attendanceInfo.timestamp).toLocaleTimeString()
 			: null,
-		  attendance: !!attendanceInfo?.timestamp, // Green check if there's a record
+		  attendance: !!attendanceInfo?.timestamp,
 		  check_in_image: attendanceInfo ? attendanceInfo.photo : null,
 		};
 	  });
@@ -103,21 +101,16 @@ export default function AttendanceCalendar() {
     const fetchData = async () => {
       try {
         const userId = await getUserId();
-
-        // Fetch profiles
         const profilesResponse = await fetch(`${API_URL}/profiles_by_admin/${userId}/`);
         if (!profilesResponse.ok) throw new Error("Failed to fetch profiles");
         const profiles = await profilesResponse.json();
 
-        // Fetch attendance data
         const attendanceResponse = await fetch(`${API_URL}/attendance/${userId}/`);
         if (!attendanceResponse.ok) throw new Error("Failed to fetch attendance data");
         const attendanceData = await attendanceResponse.json();
 
-        // Process data to get distinct records
         const groupedData = processData(profiles, attendanceData);
         setRows(groupedData);
-		console.log(groupedData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -128,7 +121,6 @@ export default function AttendanceCalendar() {
     fetchData();
   }, []);
 
-  // Update filtered rows based on selected date
   React.useEffect(() => {
     if (rows[selectedDate]) {
       setFilteredRows(rows[selectedDate]);
@@ -182,7 +174,6 @@ export default function AttendanceCalendar() {
         )}
       </Box>
 
-      {/* Modal for Image Preview */}
       <Modal
         open={!!previewImageUrl}
         onClose={handleCloseModal}
