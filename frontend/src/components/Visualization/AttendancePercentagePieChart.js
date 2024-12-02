@@ -121,15 +121,15 @@ const AttendancePercentagePieChart = ({ attendanceData }) => {
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
             .style("font-family", "Arial")
-            .text((d) => `${d.data.value}`);
+            .text((d) => `${d.data.value}`)
     }, [attendanceData]);
 
     return (
         <div>
             <h2> Number of Attendees by Attendance Rate During Last 30 Days</h2>
-            <svg ref={svgRef}></svg>;
+            <svg ref={svgRef}></svg>
         </div>
         )
-};
+}
 
 export default AttendancePercentagePieChart;
