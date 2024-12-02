@@ -195,12 +195,12 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
                 .style("font-size", "12px")
                 .text(displayTextCollector[i]);
         }
-    }, [attendanceData, profileCount]);
+    }, [attendanceData, profileCount, isFirstRender]);
 
     return (
     <div>
         <h2> Past 10 Days Attendance Contrast</h2>
-        <svg ref={svgRef}></svg>;
+        <svg ref={svgRef}></svg>
     </div>
     )
 };

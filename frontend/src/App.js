@@ -36,7 +36,9 @@ function App() {
 							path="/welcome"
 							element={
 								<ProtectedRoute>
-									<WelcomePage />
+									<Layout showSideNav={true}>
+										<WelcomePage />
+									</Layout>
 								</ProtectedRoute>
 							}
 						/>
@@ -44,7 +46,9 @@ function App() {
 							path="/checkin"
 							element={
 								<ProtectedRoute>
-									<WebcamCapture />
+									<Layout showSideNav={true}>
+										<WebcamCapture />
+									</Layout>
 								</ProtectedRoute>
 							}
 						/>
@@ -52,7 +56,10 @@ function App() {
 							path="/register-touchid"
 							element={
 								<ProtectedRoute>
-									<TouchIDRegistration />
+									<Layout showSideNav={true}>
+
+										<TouchIDRegistration />
+									</Layout>
 								</ProtectedRoute>
 							}
 						/>
