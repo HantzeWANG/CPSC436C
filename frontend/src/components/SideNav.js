@@ -7,6 +7,9 @@ import Typography from '@mui/material/Typography';
 import './css/SideNav.css';
 import AttendanceIcon from '@mui/icons-material/DateRange';
 import { touchIDAuth } from '../services/touchIDAuth';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+
+
 
 const SideNav = () => {
     const navigate = useNavigate();
@@ -87,6 +90,15 @@ const SideNav = () => {
                         Attendance History
                     </li>
                 </Link>
+                <Link to="/analysis">
+                  <li className="sidenav-item">
+                        <AssessmentIcon style={{ marginRight: '8px' }} />
+                        Analysis
+                    </li>
+                </Link>
+
+                {/*TODO: sign out*/}
+                {/*<li></li>*/}
             </ul>
             {error && (
                 <Typography variant="body1" color="error">

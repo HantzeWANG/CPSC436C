@@ -230,7 +230,7 @@ const AttendanceDisplayGrid = () => {
 											boxShadow: 2,
 											border: 1,
 											borderColor: "grey.400",
-											"& .MuiDataGrid-cell:hover": {
+										 	"& .MuiDataGrid-cell:hover": {
 												color: "primary.main",
 											},
 										}}
