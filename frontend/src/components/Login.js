@@ -37,18 +37,21 @@ const Login = () => {
                         flexDirection: 'column'
                 }}
             >
-                <h2 style={{ marginBottom: '10px' }}>Authenticate with Confidence, </h2>
-                <h2 style={{
+                <h1 style={{ marginBottom: '10px' }}>Authenticate with Confidence, </h1>
+                <h1 style={{
                     display: 'flex',
                     margin: '0 10px 20px 0'
-                }}>Attend with Ease.</h2>
+                }}>Attend with Ease.</h1>
                 <Button
                     variant="contained"
                     onClick={initiateLogin}
                     sx={{
                         color: '#000',
                         borderRadius: '10px',
-                        width: '100px',
+                        width: '200px', // Increased width
+                        height: '60px', // Increased height
+                        padding: '15px', // Increased padding
+                        fontSize: '18px', // Increased font size
                         background: '#fff'
                     }}
                 >

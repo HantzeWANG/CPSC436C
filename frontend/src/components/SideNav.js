@@ -1,112 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import Typography from '@mui/material/Typography';
-import './css/SideNav.css';
-import AttendanceIcon from '@mui/icons-material/DateRange';
-import { touchIDAuth } from '../services/touchIDAuth';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-
-
+import Typography from "@mui/material/Typography";
+import AttendanceIcon from "@mui/icons-material/DateRange";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import { touchIDAuth } from "../services/touchIDAuth";
+import "./css/SideNav.css";
 
 const SideNav = () => {
-    const navigate = useNavigate();
-    const [error, setError] = useState("");
+	const navigate = useNavigate();
+	const [error, setError] = useState("");
 
-    const handleDashboardAccess = async () => {
-        try {
-            await touchIDAuth.checkSupport();
-            if (!touchIDAuth.isRegistered()) {
-                navigate("/register-touchid");
-                return;
-            }
+	const handleProtectedRouteAccess = async (route) => {
+		try {
+			if (touchIDAuth.isInProtectedArea()) {
+				navigate(route);
+				return;
+			}
 
-            try {
-                await touchIDAuth.verify();
-                navigate("/dashboard");
-            } catch (verifyError) {
-                touchIDAuth.clearRegistration();
-                navigate("/register-touchid");
-            }
-        } catch (err) {
-            console.error("Access failed:", err);
-            setError(err.message);
+			await touchIDAuth.checkSupport();
+			if (!touchIDAuth.isRegistered()) {
+				navigate("/register-touchid");
+				return;
+			}
 
-            if (err.message === "TouchID registration expired") {
-                navigate("/register-touchid");
-            }
-        }
-    };
+			try {
+				await touchIDAuth.verify();
+				navigate(route);
+			} catch (verifyError) {
+				touchIDAuth.clearRegistration();
+				navigate("/register-touchid");
+			}
+		} catch (err) {
+			console.error("Access failed:", err);
+			setError(err.message);
 
-    const handleAttendanceHistoryAccess = async () => {
-        try {
-            await touchIDAuth.checkSupport();
-            if (!touchIDAuth.isRegistered()) {
-                navigate("/register-touchid");
-                return;
-            }
+			if (err.message === "TouchID registration expired") {
+				navigate("/register-touchid");
+			}
+		}
+	};
 
-            try {
-                await touchIDAuth.verify();
-                navigate("/attendance-detail");
-            } catch (verifyError) {
-                touchIDAuth.clearRegistration();
-                navigate("/register-touchid");
-            }
-        } catch (err) {
-            console.error("Access failed:", err);
-            setError(err.message);
-
-            if (err.message === "TouchID registration expired") {
-                navigate("/register-touchid");
-            }
-        }
-    };
-
-    return (
-        <div className="sidenav">
-            <ul className="sidenav-list">
-                <Link to="/welcome">
-                    <li className="sidenav-item">
-                        <HomeIcon style={{ marginRight: '8px' }} />
-                        Home
-                    </li>
-                </Link>
-                <li className="sidenav-item" onClick={handleDashboardAccess}>
-                    <DashboardIcon style={{ marginRight: '8px' }} />
-                    Admin Dashboard
-                </li>
-                <Link to="/checkin">
-                    <li className="sidenav-item">
-                        <CheckCircleIcon style={{ marginRight: '8px' }} />
-                        Sign Attendance
-                    </li>
-                </Link>
-                <Link to="/attendance-detail" onClick={handleAttendanceHistoryAccess}>
-                    <li className="sidenav-item">
-                        <AttendanceIcon style={{ marginRight: '8px' }} />
-                        Attendance History
-                    </li>
-                </Link>
-                <Link to="/analysis">
-                  <li className="sidenav-item">
-                        <AssessmentIcon style={{ marginRight: '8px' }} />
-                        Analysis
-                    </li>
-                </Link>
-
-                {/*TODO: sign out*/}
-                {/*<li></li>*/}
-            </ul>
-            {error && (
-                <Typography variant="body1" color="error">
-                    {error}
-                </Typography>
-            )}
-        </div>
-    );
+	return (
+		<nav style={{ width: 240, background: "#000033" }}>
+			<ul className="sidenav-list">
+				<Link to="/welcome">
+					<li className="sidenav-item">
+						<HomeIcon style={{ marginRight: "8px" }} />
+						Home
+					</li>
+				</Link>
+				<li
+					className="sidenav-item"
+					onClick={() => handleProtectedRouteAccess("/dashboard")}
+				>
+					<DashboardIcon style={{ marginRight: "8px" }} />
+					Admin Dashboard
+				</li>
+				<li
+					className="sidenav-item"
+					onClick={() => handleProtectedRouteAccess("/attendance-detail")}
+				>
+					<AttendanceIcon style={{ marginRight: "8px" }} />
+					Past Attendance
+				</li>
+				<li
+					className="sidenav-item"
+					onClick={() => handleProtectedRouteAccess("/analysis")}
+				>
+					<AssessmentIcon style={{ marginRight: "8px" }} />
+					Analysis
+				</li>
+				<Link to="/checkin">
+					<li className="sidenav-item">
+						<CheckCircleIcon style={{ marginRight: "8px" }} />
+						Sign Attendance
+					</li>
+				</Link>
+			</ul>
+			{error && (
+				<Typography variant="body1" color="error">
+					{error}
+				</Typography>
+			)}
+		</nav>
+	);
 };
 
 export default SideNav;

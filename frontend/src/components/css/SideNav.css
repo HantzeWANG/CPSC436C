@@ -1,44 +1,53 @@
-/* SideNav.css */
 .sidenav {
-    width: 200px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: linear-gradient(180deg, #000428, #004e92);
-    color: white;
-    padding-top: 20px;
+	width: 200px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	padding-top: 20px;
 }
 
 .sidenav-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidenav-list a {
-    text-decoration: none;
+	list-style: none;
+	padding: 20px 0 0 0;
+	margin: 0;
+	width: 240px;
+	height: 100%;
 }
 
 .sidenav-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    color: #fff;
-}
-
-.sidenav-icon {
-    margin-right: 8px;
-    font-size: 24px; /* Adjust icon size */
-    color: #555; /* Icon color */
-}
-
-.sidenav-item a {
-    text-decoration: none;
-    color: white;
+	display: flex;
+	align-items: center;
+	padding: 14px 14px;
+	margin: 6px 6px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	color: rgba(255, 255, 255, 0.85);
+	border-radius: 8px;
+	font-weight: 500;
 }
 
 .sidenav-item:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
+	background-color: rgba(255, 255, 255, 0.1);
+	color: white;
+	transform: translateX(4px);
 }
 
+.sidenav-item svg {
+	margin-right: 12px;
+	font-size: 20px;
+	opacity: 0.9;
+	transition: all 0.3s ease;
+	min-width: 24px;
+}
+
+.sidenav-item:hover svg {
+	opacity: 1;
+	transform: scale(1.1);
+}
+
+.sidenav-list a {
+	text-decoration: none;
+	color: inherit;
+	width: 100%;
+}

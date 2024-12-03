@@ -109,7 +109,6 @@ export const WebcamCapture = () => {
 									setIsUploading(true);
 									setUploadResult(null);
 									const imageBase64 = getScreenshot();
-									console.log(imageBase64);
 									await uploadAttedancePhoto(imageBase64, profileID);
 									const { statusCode, status, message } = await uploadAttedancePhoto(
 										imageBase64,
