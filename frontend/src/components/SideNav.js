@@ -7,7 +7,9 @@ import Typography from '@mui/material/Typography';
 import './css/SideNav.css';
 import AttendanceIcon from '@mui/icons-material/DateRange';
 import { touchIDAuth } from '../services/touchIDAuth';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import {logout} from "../services/auth";
 
 
 
@@ -65,6 +67,11 @@ const SideNav = () => {
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
+
     return (
         <div className="sidenav">
             <ul className="sidenav-list">
@@ -97,14 +104,16 @@ const SideNav = () => {
                     </li>
                 </Link>
 
-                {/*TODO: sign out*/}
-                {/*<li></li>*/}
             </ul>
             {error && (
                 <Typography variant="body1" color="error">
                     {error}
                 </Typography>
             )}
+            <button className="sidenav-footer" onClick={handleLogout}>
+                <ExitToAppIcon style={{ marginRight: '8px' }}/>
+                Sign Out
+            </button>
         </div>
     );
 };

@@ -26,8 +26,6 @@ function App() {
 			<Router>
 				<div className="App">
 					<Routes>
-						{/* Public routes */}
-						{/* TODO: log out to here*/}
 						<Route path="/login" element={<Login />} />
 						<Route path="/callback" element={<AuthCallback />} />
 

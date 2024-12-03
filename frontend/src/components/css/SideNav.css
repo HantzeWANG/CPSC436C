@@ -3,6 +3,8 @@
     width: 200px;
     position: fixed;
     top: 0;
+    display: flex;
+    flex-direction: column;
     left: 0;
     height: 100%;
     background: linear-gradient(180deg, #000428, #004e92);
@@ -11,6 +13,7 @@
 }
 
 .sidenav-list {
+    flex: 1;
     list-style-type: none;
     padding: 0;
 }
@@ -23,13 +26,15 @@
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+    background: transparent;
+    border: none;
     color: #fff;
 }
 
 .sidenav-icon {
     margin-right: 8px;
-    font-size: 24px; /* Adjust icon size */
-    color: #555; /* Icon color */
+    font-size: 24px;
+    color: #555;
 }
 
 .sidenav-item a {
@@ -41,4 +46,22 @@
     background-color: rgba(255, 255, 255, 0.2);
     cursor: pointer;
 }
+.sidenav-footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    color: inherit;
+    box-sizing: border-box;
+    text-align: left;
+}
 
+.sidenav-footer:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+}
