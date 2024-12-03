@@ -1,14 +1,16 @@
-import React, {useRef, useEffect, useState} from "react";
-import {getUserId} from "../../services/profilepics";
+import React, { useRef, useEffect, useState } from "react";
+import { getUserId } from "../../services/profilepics";
 import MonthlyHeatMap from "./MonthlyHeatMap";
 import AttendancePercentagePieChart from "./AttendancePercentagePieChart";
 import Past10DaysLineGraph from "./Past10DaysLineGraph";
+import { CircularProgress } from "@mui/material";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const DataVisualizationAnalyzer = () => {
     const [dataGroupByDate, setDataGroupByDate] = useState([]);
     const [profiles, setProfiles] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     function processData(profiles, attendanceRecords) {
@@ -49,6 +51,7 @@ const DataVisualizationAnalyzer = () => {
                     profile_name: profile.profile_name,
                     check_in_time: attendanceInfo?.time || null,
                     attendance: attendanceInfo?.present || false,
+                    check_in_image: attendanceInfo?.photo || null,
                 };
             });
         });
@@ -92,12 +95,15 @@ const DataVisualizationAnalyzer = () => {
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError(error.message);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
     }, []);
 
+    if (loading) return <div style={{ textAlign: "center", margin: "20px" }}><CircularProgress /></div>;
     if (error) {
         return <div>Error: {error}</div>;
     }
@@ -124,27 +130,26 @@ const DataVisualizationAnalyzer = () => {
 };
 
 const containerStyle = {
-    display: 'flex',
-    flexDirection: 'column', // Stack the rows vertically
-    gap: '20px', // Space between rows
-    padding: '20px',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
 };
 
 const monthlyHeatMapStyle = {
-    // Style for MonthlyHeatMap component
-    flex: '1 1 80%', // Take up the full row
+    width: "100%",
+    marginBottom: "20px",
 };
 
 const rowStyle = {
-    display: 'flex', // Flexbox for second row
-    justifyContent: 'space-between', // Distribute space evenly
-    gap: '10px', // Space between charts in the second row
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
 };
 
 const chartContainerStyle = {
-    flex: '1 1 48%', // Make each chart take up about 48% of the width
-    minWidth: '250px', // Prevent charts from getting too small
-    maxWidth: '600px', // Optional: restrict maximum width
+    width: "48%",
 };
 
 export default DataVisualizationAnalyzer;
