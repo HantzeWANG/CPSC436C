@@ -21,9 +21,10 @@ def lambda_handler(event, context):
         file_name = attend_key.split("/")[-1]
         file_name_stripped = file_name.split(".")[0]
         components = file_name_stripped.split("_")
-        admin_id = components[0]
+        admin_id = attend_key.split("/")[0]
         rds_key = components[1]
         pfp_path = get_path_from_db(admin_id, rds_key)
+        print(f"[INFO] Profile picture S3 path retrieved: {pfp_path}")
 
         if not pfp_path:
             return {
@@ -80,11 +81,11 @@ def lambda_handler(event, context):
                     "status": "failure",
                     "body": f"Error inserting data: {insertion_err}"
                 }
-            print("[INFO] Face match successful, check-in recorded")
+            print("[INFO] Face match successful, attendance recorded")
             return {
                 "statusCode": 200,
                 "status": "success",
-                "body": "Face match successful, check-in recorded"
+                "body": "Face match successful, attendance recorded"
             }
         # Case 2: Failed facial comparison
         else:
