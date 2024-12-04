@@ -36,7 +36,7 @@ const AddProfileModal = ({ onClose, onProfileAdded }) => {
     };
 
     const isValidProfileID = /^[a-zA-Z0-9]*$/.test(profileID) && profileID.trim().length > 0 && profileID.length < 60;
-    const isValidProfileName = /^[a-zA-Z0-9]*$/.test(profileName) && profileName.length < 60 && profileName.trim().length > 0;
+    const isValidProfileName = /^[a-zA-Z0-9\s]*$/.test(profileName) && profileName.length < 60 && profileName.trim().length > 0;
 
     const handleProfileCreation = async (s3ImageUrl) => {
         try {
@@ -105,7 +105,7 @@ const AddProfileModal = ({ onClose, onProfileAdded }) => {
                             margin="normal"
                             helperText={
                                 !isValidProfileID
-                                    ? "Profile ID must be alphanumeric and less than 60 characters."
+                                    ? "Profile ID must be alphanumeric and less than 60 characters"
                                     : ""
                             }
                             error={!isValidProfileID && profileID.length > 0}
@@ -120,7 +120,7 @@ const AddProfileModal = ({ onClose, onProfileAdded }) => {
                         margin="normal"
                         helperText={
                             !isValidProfileName
-                                ? "Profile Name must be alphanumeric and less than 60 characters."
+                                ? "Profile Name must contain only letters, numbers, spaces, and be less than 60 characters"
                                 : ""
                         }
                         error={!isValidProfileName && profileName.length > 0}

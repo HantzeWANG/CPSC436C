@@ -19,7 +19,7 @@ const EditProfileModal = ({ profile, onClose, onSave }) => {
         onSave(updatedProfile);
     };
 
-    const isValidProfileName = /^[a-zA-Z0-9]*$/.test(profileName) && profileName.length < 60 && profileName.trim().length > 0;
+    const isValidProfileName = /^[a-zA-Z0-9\s]*$/.test(profileName) && profileName.length < 60 && profileName.trim().length > 0;
 
 
     return (
@@ -46,7 +46,7 @@ const EditProfileModal = ({ profile, onClose, onSave }) => {
                     style={{ marginBottom: "20px" }}
                     helperText={
                         !isValidProfileName
-                            ? "Profile Name must be alphanumeric and less than 60 characters."
+                            ? "Profile Name must contain only letters, numbers, spaces, and be less than 60 characters"
                             : ""
                     }
                     error={!isValidProfileName && profileName.length > 0}
