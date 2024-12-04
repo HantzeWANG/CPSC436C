@@ -27,6 +27,20 @@ const AttendancePercentagePieChart = ({ attendanceData }) => {
         const thirtyDaysAgo = new Date(today);
         thirtyDaysAgo.setDate(today.getDate() - 30);
 
+        // Add tooltip
+        const tooltip = d3
+            .select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("background", "white")
+            .style("border", "1px solid #ccc")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+            .style("font-size", "12px")
+            .style("visibility", "hidden")
+            .style("pointer-events", "none");
+
         Object.values(attendanceData).forEach((attendanceList) => {
             attendanceList.forEach((entry) => {
                 if (!attendees[entry.profile_name]) {
@@ -79,7 +93,20 @@ const AttendancePercentagePieChart = ({ attendanceData }) => {
             .attr("d", arc)
             .attr("fill", (d) => color(d.data.label))
             .attr("stroke", "white")
-            .style("stroke-width", "2px");
+            .style("stroke-width", "2px")
+            .on("mouseover", (event, d) => {
+            tooltip
+                .style("visibility", "visible")
+                .text(`${d.data.label}: ${d.data.value}`);
+        })
+            .on("mousemove", (event) => {
+                tooltip
+                    .style("top", `${event.pageY + 10}px`)
+                    .style("left", `${event.pageX + 10}px`);
+            })
+            .on("mouseout", () => {
+                tooltip.style("visibility", "hidden");
+            });
 
         // Add legend
         const legendGroup = svg
@@ -112,21 +139,11 @@ const AttendancePercentagePieChart = ({ attendanceData }) => {
                 .text(d.label);
         });
 
-        chartGroup
-            .selectAll("text")
-            .data(pie(pieData))
-            .enter()
-            .append("text")
-            .attr("transform", (d) => `translate(${arc.centroid(d)})`)
-            .attr("text-anchor", "middle")
-            .style("font-size", "12px")
-            .style("font-family", "Arial")
-            .text((d) => `${d.data.value}`)
     }, [attendanceData]);
 
     return (
         <div>
-            <h2> Number of Attendees by Attendance Rate During Last 30 Days</h2>
+            <h2> Distribution of Attendees by Attendance Rate During Last 30 Days</h2>
             <svg ref={svgRef}></svg>
         </div>
         )

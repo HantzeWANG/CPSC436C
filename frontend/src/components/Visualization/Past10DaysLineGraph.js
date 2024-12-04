@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import * as d3 from "d3";
+import {colorDarkBlue, colorDarkRed} from "../../constant/Constant";
 
 const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
     const svgRef = useRef();
@@ -12,9 +13,8 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
         const margin = { top: 20, right: 100, bottom: 50, left: 70 };
         const width = 700 - margin.left - margin.right;
         const height = 400 - margin.top - margin.bottom;
-        const successCheckInColor = "rgb(41, 67, 106)";
-        const failureCheckInColor = "rgb(254,150,119)";
-        const notAttendColor = "rgb(152, 64, 67)";
+        const successCheckInColor = colorDarkBlue;
+        const notAttendColor = colorDarkRed;
 
         const chartGroup = svg
             .attr("width", width + margin.left + margin.right )
@@ -51,7 +51,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             .domain([tenDaysAgo, today])
             .range([0, width]);
 
-        const maxAttendance = d3.max(formattedData, (d) => Math.max(d.successCheckIn, d.failureCheckIn, d.notAttended));
+        const maxAttendance = d3.max(formattedData, (d) => Math.max(d.successCheckIn, d.notAttended));
 
         let yAxisInterval;
         if (maxAttendance < 10) {
@@ -73,11 +73,6 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             .x((d) => xScale(d.date))
             .y((d) => yScale(d.successCheckIn));
 
-        const lineCheckInFailure = d3
-            .line()
-            .x((d) => xScale(d.date))
-            .y((d) => yScale(d.failureCheckIn));
-
         const lineNotAttended = d3
             .line()
             .x((d) => xScale(d.date))
@@ -93,15 +88,6 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             .style("fill", "none")
             .style("stroke-width", 2);
 
-        const lineFailureCheckInPath = chartGroup
-            .append("path")
-            .data([formattedData])
-            .attr("class", "line-failure-check-in")
-            .attr("d", lineCheckInFailure)
-            .style("stroke", failureCheckInColor)
-            .style("fill", "none")
-            .style("stroke-width", 2);
-
         const lineNotAttendedPath = chartGroup
             .append("path")
             .data([formattedData])
@@ -111,22 +97,30 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             .style("fill", "none")
             .style("stroke-width", 2);
 
-        const pathCollector = [lineSuccessCheckInPath, lineFailureCheckInPath, lineNotAttendedPath]
+        lineSuccessCheckInPath
+            .attr("stroke-dasharray", function () {
+                const length = this.getTotalLength();
+                return length;
+            })
+            .attr("stroke-dashoffset", function () {
+                return this.getTotalLength();
+            })
+            .transition()
+            .duration(2000)
+            .attr("stroke-dashoffset", 0);
 
-        // Apply the transition only on the first render
-        if (isFirstRender) {
-            for (let currPath of pathCollector) {
-                const totalLength = currPath.node().getTotalLength();
-                currPath
-                    .attr("stroke-dasharray", totalLength)
-                    .attr("stroke-dashoffset", totalLength)
-                    .transition()
-                    .duration(1000)
-                    .ease(d3.easeLinear)
-                    .attr("stroke-dashoffset", 0);
-            }
-            setIsFirstRender(false);
-        }
+        lineNotAttendedPath
+            .attr("stroke-dasharray", function () {
+                const length = this.getTotalLength();
+                return length;
+            })
+            .attr("stroke-dashoffset", function () {
+                return this.getTotalLength();
+            })
+            .transition()
+            .duration(2000)
+            .attr("stroke-dashoffset", 0);
+
 
         // Add Axes
         chartGroup
@@ -168,15 +162,15 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             .append("rect")
             .attr("x", width - 100)
             .attr("y", 0)
-            .attr("width", 150)
-            .attr("height", 80)
+            .attr("width", 100)
+            .attr("height", 60)
             .attr("fill", "white")
             .attr("stroke", "black");
 
-        const colorCollector = [successCheckInColor, failureCheckInColor, notAttendColor];
-        const displayTextCollector = ["Check In Successful", "Check In Failed", "Not Attended"];
+        const colorCollector = [successCheckInColor,  notAttendColor];
+        const displayTextCollector = ["Attended",  "Not Attended"];
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
             const yPosition = 15 + i * 20; // Adjust y position for each item
 
             // Add circle
@@ -199,7 +193,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
 
     return (
     <div>
-        <h2> Past 10 Days Attendance Contrast</h2>
+        <h2> Past 10 Days Attendance Comparison</h2>
         <svg ref={svgRef}></svg>
     </div>
     )
