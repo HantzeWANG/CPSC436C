@@ -38,6 +38,8 @@ const SideNav = () => {
 		} catch (err) {
 			console.error("Access failed:", err);
 			setError(err.message);
+		}
+	}
 
 
     const handleLogout = () => {
