@@ -146,7 +146,7 @@ export const WebcamCapture = () => {
 										<>
 											<CircularProgress size={60} />
 											<Typography variant="h6" sx={{ mt: 2 }}>
-												Uploading...
+												Face captured. Analyzing...
 											</Typography>
 										</>
 									)}
