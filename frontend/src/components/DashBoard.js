@@ -5,7 +5,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddProfileModal from "./AddProfileModal";
 import EditProfileModal from "./EditProfileModal";
 import Modal from "@mui/material/Modal";
-import { AppBar, Toolbar, Container, CircularProgress, Typography } from "@mui/material";
+import {AppBar, Toolbar, Container, CircularProgress, Typography, Tooltip, IconButton} from "@mui/material";
+import Button from "@mui/material/Button";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import "./css/Dashboard.css"
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -138,34 +142,36 @@ const DashBoard = () => {
                     marginBottom: "20px",
                 }}
             >
-                <button
-                    onClick={() => setShowAddModal(true)}
-                    style={{
-                        padding: "10px 20px",
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        marginRight: "10px",
-                    }}
-                >
-                    Add Profile
-                </button>
-                <button
-                    onClick={() => setShowEditModal(true)}
-                    disabled={!selectedRow}
-                    style={{
-                        padding: "10px 20px",
-                        backgroundColor: selectedRow ? "#007bff" : "#ccc",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: selectedRow ? "pointer" : "not-allowed",
-                    }}
-                >
-                    Edit Profile
-                </button>
+                <Tooltip title="Add Profile" arrow>
+                    <IconButton color="primary"
+                                onClick={() => setShowAddModal(true)}
+                                style={{ marginRight: "20px",
+                                    width: "60px",
+                                    height: "40px",
+                                    borderRadius: "4px",
+                                }}
+                    >
+                        <PersonAddIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Edit Profile" arrow>
+                    <IconButton color="primary"
+                                onClick={() => setShowEditModal(true)}
+                                disabled={!selectedRow}
+                                style={{
+                                    cursor: selectedRow ? "pointer" : "not-allowed",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    textTransform: "none",
+                                    width: "60px",
+                                    height: "40px",
+                                    borderRadius: "4px",
+                                }}
+                    >
+                        <ModeEditOutlineIcon />
+                    </IconButton>
+                </Tooltip>
             </div>
             <Box sx={{ height: 400, width: "100%" }}>
                 <DataGrid

@@ -3,6 +3,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import DragDrop from "./DragDrop";
+import {Button} from "@mui/material";
 
 const EditProfileModal = ({ profile, onClose, onSave }) => {
     const [profileName, setProfileName] = useState(profile.profile_name);
@@ -17,6 +18,9 @@ const EditProfileModal = ({ profile, onClose, onSave }) => {
         };
         onSave(updatedProfile);
     };
+
+    const isValidProfileName = /^[a-zA-Z0-9]*$/.test(profileName) && profileName.length < 60 && profileName.trim().length > 0;
+
 
     return (
         <Modal open={true} onClose={onClose}>
@@ -40,12 +44,18 @@ const EditProfileModal = ({ profile, onClose, onSave }) => {
                     value={profileName}
                     onChange={(e) => setProfileName(e.target.value)}
                     style={{ marginBottom: "20px" }}
+                    helperText={
+                        !isValidProfileName
+                            ? "Profile Name must be alphanumeric and less than 60 characters."
+                            : ""
+                    }
+                    error={!isValidProfileName && profileName.length > 0}
                 />
                 <DragDrop
                     profileID={profile.profile_id}
                     onUploadSuccess={(url) => setNewImageUrl(url)}
                 />
-                <button onClick={handleSave}>Save</button>
+                <Button variant="outlined" onClick={handleSave}>Save</Button>
             </Box>
         </Modal>
     );

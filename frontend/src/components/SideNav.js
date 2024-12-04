@@ -10,6 +10,7 @@ import { touchIDAuth } from "../services/touchIDAuth";
 import "./css/SideNav.css";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import {logout} from "../services/auth";
+import {IconButton, Tooltip} from "@mui/material";
 
 const SideNav = () => {
 	const navigate = useNavigate();
@@ -89,10 +90,11 @@ const SideNav = () => {
 					{error}
 				</Typography>
 			)}
-                  <button className="sidenav-footer" onClick={handleLogout}>
-                <ExitToAppIcon style={{ marginRight: '8px' }}/>
-                Sign Out
-            </button>
+			<IconButton
+				id={"signout-button"}
+				onClick={handleLogout}>
+				<ExitToAppIcon fontSize="xl"></ExitToAppIcon>
+			</IconButton>
 		</nav>
 	);
 };
