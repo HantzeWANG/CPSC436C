@@ -26,6 +26,7 @@ function App() {
 			<Router>
 				<div className="App">
 					<Routes>
+						{/* Public routes */}
 						<Route path="/login" element={<Login />} />
 						<Route path="/callback" element={<AuthCallback />} />
 
@@ -44,7 +45,7 @@ function App() {
 							path="/checkin"
 							element={
 								<ProtectedRoute>
-									<Layout showSideNav={true}>
+									<Layout showSideNav={false}>
 										<WebcamCapture />
 									</Layout>
 								</ProtectedRoute>
@@ -55,7 +56,6 @@ function App() {
 							element={
 								<ProtectedRoute>
 									<Layout showSideNav={true}>
-
 										<TouchIDRegistration />
 									</Layout>
 								</ProtectedRoute>
@@ -83,12 +83,15 @@ function App() {
 								</AdminRoute>
 							}
 						/>
-						<Route path="/analysis" element={
-						<ProtectedRoute>
-							<Layout showSideNav={true}>
-								<DataVisualizationAnalyzer />
-							</Layout>
-						</ProtectedRoute>}
+						<Route
+							path="/analysis"
+							element={
+								<AdminRoute>
+									<Layout showSideNav={true}>
+										<DataVisualizationAnalyzer />
+									</Layout>
+								</AdminRoute>
+							}
 						/>
 
 						<Route path="/" element={<Navigate to="/login" replace />} />

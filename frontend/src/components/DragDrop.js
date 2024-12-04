@@ -3,26 +3,21 @@ import { uploadProfilePicture } from "../services/profilepics";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import {TextField} from "@mui/material";
 
 const DragDrop = ({ profileID, onUploadSuccess }) => {
-	const [userId, setUserId] = useState(null);
+	const [, setUserId] = useState(null);
 	const [image, setImage] = useState(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadStatus, setUploadStatus] = useState({ type: "", message: "" });
 	const [isDragging, setIsDragging] = useState(false);
-	const [error, setError] = useState(false);
-	const [helperText, setHelperText] = useState('');
-
-	const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+	const [, setError] = useState(false);
+	const [, setHelperText] = useState("");
 
 	const validateFile = (file) => {
 		if (!file.type.startsWith("image/")) {
 			throw new Error("Please select an image file.");
 		}
-		if (file.size > MAX_FILE_SIZE) {
-			throw new Error("File size exceeds 5MB limit.");
-		}
+		// TODO: Should adjust the position of profileID validation
 		if (!profileID) {
 			throw new Error("Please enter a Profile ID first.");
 		}
@@ -48,13 +43,13 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				try {
 					setIsUploading(true);
 					const s3Url = await uploadProfilePicture(file, profileID);
-					setUploadStatus({ type: "success", message: "Upload successful!!" });
+					setUploadStatus({ type: "success", message: "Upload successful!" });
 					if (onUploadSuccess) {
 						await onUploadSuccess(s3Url);
 					}
 				} catch (error) {
-					console.log("line 52")
-					console.log(error.message)
+					console.log("line 52");
+					console.log(error.message);
 					setUploadStatus({
 						type: "error",
 						message: error.message || "Upload failed. Please try again.",
@@ -88,7 +83,7 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 
 	const handleUserIdChange = (event) => {
 		const inputValue = event.target.value;
-		setUserId(inputValue)
+		setUserId(inputValue);
 		validateInput(inputValue);
 	};
 
@@ -97,10 +92,10 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 
 		if (!regex.test(input)) {
 			setError(true);
-			setHelperText('Only alphabets and numbers are allowed');
+			setHelperText("Only alphabets and numbers are allowed");
 		} else {
 			setError(false);
-			setHelperText('');
+			setHelperText("");
 		}
 	};
 
@@ -176,6 +171,10 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				open={!!uploadStatus.message}
 				autoHideDuration={6000}
 				onClose={() => setUploadStatus({ type: "", message: "" })}
+				anchorOrigin={{ vertical: "top", horizontal: "right" }}
+				sx={{
+					marginRight: "-20px",
+				}}
 			>
 				<Alert
 					severity={uploadStatus.type}
