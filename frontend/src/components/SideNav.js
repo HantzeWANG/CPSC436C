@@ -8,6 +8,8 @@ import AttendanceIcon from "@mui/icons-material/DateRange";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { touchIDAuth } from "../services/touchIDAuth";
 import "./css/SideNav.css";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import {logout} from "../services/auth";
 
 const SideNav = () => {
 	const navigate = useNavigate();
@@ -37,11 +39,11 @@ const SideNav = () => {
 			console.error("Access failed:", err);
 			setError(err.message);
 
-			if (err.message === "TouchID registration expired") {
-				navigate("/register-touchid");
-			}
-		}
-	};
+
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
 
 	return (
 		<nav style={{ width: 240, background: "#000033" }}>
@@ -85,6 +87,10 @@ const SideNav = () => {
 					{error}
 				</Typography>
 			)}
+                  <button className="sidenav-footer" onClick={handleLogout}>
+                <ExitToAppIcon style={{ marginRight: '8px' }}/>
+                Sign Out
+            </button>
 		</nav>
 	);
 };

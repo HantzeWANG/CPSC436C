@@ -67,7 +67,17 @@ export const clearTokens = () => {
 
 export const logout = () => {
 	clearTokens();
-	const logoutUrl = `https://${cognitoConfig.oauth.domain}/logout?client_id=${cognitoConfig.userPoolClientId}&logout_uri=${cognitoConfig.oauth.redirectSignOut}`;
+
+	const redirectUri = `${window.location.origin}/login`;
+
+	const cognitoDomain = cognitoConfig.oauth.domain.startsWith("https://")
+		? cognitoConfig.oauth.domain
+		: `https://${cognitoConfig.oauth.domain}`;
+
+	const logoutUrl = `${cognitoDomain}/logout?client_id=${cognitoConfig.userPoolClientId}&logout_uri=${encodeURIComponent(redirectUri)}`;
+
+	console.log("Logout URL:", logoutUrl);
+
 	window.location.href = logoutUrl;
 };
 
