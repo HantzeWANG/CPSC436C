@@ -101,7 +101,8 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             // colorTheme
             const baseColor = { r: 199, g: 158, b: 131 };
 
-            const intensity = Math.min(count / 10, 1);  // Ensure the value is between 0 and 1
+            const normalizedCount = Math.min(count / 10, 1); // Ensure the value is between 0 and 1
+            const intensity = Math.pow(normalizedCount, 0.5); // Apply stronger scaling for contrast
 
             const r = Math.floor(baseColor.r + (255 - baseColor.r) * intensity);
             const g = Math.floor(baseColor.g + (255 - baseColor.g) * intensity);
@@ -109,7 +110,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
 
             // Return the color as an RGB string
             return `rgb(${r},${g},${b})`;
-        };
+        };   
 
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
