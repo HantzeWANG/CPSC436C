@@ -33,10 +33,8 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
         const processedData = allDates.map((date) => {
             const attendanceList = attendanceData[date] || [];
             const successCheckInCount = attendanceList.filter((entry) => entry.attendance === true).length;
-            const failureCheckInCount = attendanceList.filter((entry) => entry.attendance === false).length;
-            const notAttendedCount = profileCount - successCheckInCount - failureCheckInCount;
-            return { date, successCheckIn: successCheckInCount,
-                failureCheckIn: failureCheckInCount, notAttended: notAttendedCount };
+            const notAttendedCount = profileCount - successCheckInCount;
+            return { date, successCheckIn: successCheckInCount, notAttended: notAttendedCount };
         });
 
         // Convert string date to actual Date object
