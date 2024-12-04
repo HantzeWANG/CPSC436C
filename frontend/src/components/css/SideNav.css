@@ -48,6 +48,7 @@
 	opacity: 1;
 	transform: scale(1.1);
 }
+
 .sidenav-footer {
     position: absolute;
     bottom: 20px;
@@ -58,14 +59,15 @@
     border: none;
     background: transparent;
     font-size: 16px;
-    color: inherit;
+    color: white;
     box-sizing: border-box;
     text-align: left;
 }
 
 .sidenav-footer:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 0;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 0;
+}
   
 .sidenav-list a {
 	text-decoration: none;
