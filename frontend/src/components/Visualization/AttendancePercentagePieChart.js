@@ -62,13 +62,13 @@ const AttendancePercentagePieChart = ({ attendanceData }) => {
         Object.values(attendees).forEach((daysAttended) => {
             const attendancePercentage = (daysAttended / daysInMonth) * 100;
             if (attendancePercentage >= 90) {
-                categories["90-100%e"]++;
+                categories["90-100% "]++;
             } else if (attendancePercentage >= 70) {
                 categories["70-90% "]++;
             } else if (attendancePercentage >= 50) {
-                categories["50-70%"]++;
+                categories["50-70% "]++;
             } else {
-                categories["<50%"]++;
+                categories["<50% "]++;
             }
         });
 

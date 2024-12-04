@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import {colorDarkRed, colorTheme} from "../../constant/Constant";
+import {colorBlue} from "../../constant/Constant";
 
 const MonthlyHeatMap = ({ attendanceData }) => {
     const svgRef = useRef();
@@ -96,7 +96,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             }
 
             if (count === 0) {
-                return "#ffffff";
+                return "#e6d3c7";
             }
             // colorTheme
             const baseColor = { r: 199, g: 158, b: 131 };
@@ -132,7 +132,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             .attr("height", yScale.bandwidth())
             .attr("fill", (d) => colorScale(d.attendanceCount, d.dateKey))
             .on("mouseenter", function (event, d) {
-                d3.select(this).style("stroke", colorDarkRed).style("stroke-width", "2px");
+                d3.select(this).style("stroke", colorBlue).style("stroke-width", "2px");
 
                 tooltip
                     .style("visibility", "visible")

@@ -4,3 +4,4 @@ export const colorBlue = "rgb(152,172,179)";
 export const colorGrey = "rgb(177,178,175)";
 export const colorDarkBlue = "rgb(41, 67, 106)";
 export const colorDarkRed = "rgb(152, 64, 67)";
+export const colorThemeComplement = "rgb(131,172,199)";
