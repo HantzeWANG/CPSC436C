@@ -158,7 +158,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
 
         legendGroup
             .append("rect")
-            .attr("x", width - 100)
+            .attr("x", width - 50)
             .attr("y", 0)
             .attr("width", 100)
             .attr("height", 60)
@@ -174,7 +174,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             // Add circle
             legendGroup
                 .append("circle")
-                .attr("cx", width - 90)
+                .attr("cx", width - 40)
                 .attr("cy", yPosition)
                 .attr("r", 5)
                 .style("fill", colorCollector[i]);
@@ -182,7 +182,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             // Add corresponding text
             legendGroup
                 .append("text")
-                .attr("x", width - 80)
+                .attr("x", width - 30)
                 .attr("y", yPosition + 5)
                 .style("font-size", "12px")
                 .text(displayTextCollector[i]);
