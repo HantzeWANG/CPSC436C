@@ -84,8 +84,18 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             };
         });
 
+        const counts = mergedData.map(d => d.attendanceCount);
+        const minCount = d3.min(counts);
+        const maxCount = d3.max(counts);
+
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
+
+        const pastDateColorScale = d3.scaleLinear()
+            .domain([minCount, maxCount])
+            .range(["#dfc7b8", "#af754f"])
+            .interpolate(d3.interpolateLab);
+
         const colorScale = (count, date) => {
             const dateToCompare = new Date(date);
             dateToCompare.setHours(0, 0, 0, 0);
@@ -93,22 +103,9 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             if (dateToCompare > currentDate) {
                 // Grey for future dates
                 return "#d3d3d3";
+            } else {
+                return pastDateColorScale(count);
             }
-
-            if (count === 0) {
-                return "#e6d3c7";
-            }
-            // colorTheme
-            const baseColor = { r: 199, g: 158, b: 131 };
-
-            const intensity = Math.min(count / 10, 1);  // Ensure the value is between 0 and 1
-
-            const r = Math.floor(baseColor.r + (255 - baseColor.r) * intensity);
-            const g = Math.floor(baseColor.g + (255 - baseColor.g) * intensity);
-            const b = Math.floor(baseColor.b + (255 - baseColor.b) * intensity);
-
-            // Return the color as an RGB string
-            return `rgb(${r},${g},${b})`;
         };
 
         const tooltip = d3.select("body").append("div")
