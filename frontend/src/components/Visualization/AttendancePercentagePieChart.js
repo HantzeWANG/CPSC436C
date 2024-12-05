@@ -143,7 +143,7 @@ const AttendancePercentagePieChart = ({ attendanceData }) => {
 
     return (
         <div>
-            <h2> Distribution of Attendees by Attendance Rate During Last 30 Days</h2>
+            <h2> Attendance Rate Distribution Over the Last 30 Days</h2>
             <svg ref={svgRef}></svg>
         </div>
         )

@@ -191,7 +191,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
 
     return (
     <div>
-        <h2> Past 10 Days Attendance Comparison</h2>
+        <h2> Daily Attendance Trends Over the Past 10 Days</h2>
         <svg ref={svgRef}></svg>
     </div>
     )
