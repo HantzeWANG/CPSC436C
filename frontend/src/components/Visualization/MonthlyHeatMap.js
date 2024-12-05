@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import {colorTheme} from "../../constant/Constant";
+import {colorBlue} from "../../constant/Constant";
 
 const MonthlyHeatMap = ({ attendanceData }) => {
     const svgRef = useRef();
@@ -96,12 +96,13 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             }
 
             if (count === 0) {
-                return "#ffffff";
+                return "#e6d3c7";
             }
             // colorTheme
             const baseColor = { r: 199, g: 158, b: 131 };
 
-            const intensity = Math.min(count / 10, 1);  // Ensure the value is between 0 and 1
+            const normalizedCount = Math.min(count / 10, 1); // Ensure the value is between 0 and 1
+            const intensity = Math.pow(normalizedCount, 0.5); // Apply stronger scaling for contrast
 
             const r = Math.floor(baseColor.r + (255 - baseColor.r) * intensity);
             const g = Math.floor(baseColor.g + (255 - baseColor.g) * intensity);
@@ -109,7 +110,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
 
             // Return the color as an RGB string
             return `rgb(${r},${g},${b})`;
-        };
+        };   
 
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
@@ -132,7 +133,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
             .attr("height", yScale.bandwidth())
             .attr("fill", (d) => colorScale(d.attendanceCount, d.dateKey))
             .on("mouseenter", function (event, d) {
-                d3.select(this).style("stroke", "black").style("stroke-width", "2px");
+                d3.select(this).style("stroke", colorBlue).style("stroke-width", "2px");
 
                 tooltip
                     .style("visibility", "visible")
@@ -165,7 +166,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
 
     return (
         <div>
-            <h2>Current Month Overview</h2>
+            <h2>Heatmap of Attendance for the Current Month</h2>
             <svg ref={svgRef}></svg>
         </div>
     );

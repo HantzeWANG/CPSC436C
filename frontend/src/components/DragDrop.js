@@ -3,6 +3,7 @@ import { uploadProfilePicture } from "../services/profilepics";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import {Button} from "@mui/material";
 
 const DragDrop = ({ profileID, onUploadSuccess }) => {
 	const [, setUserId] = useState(null);
@@ -16,10 +17,6 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 	const validateFile = (file) => {
 		if (!file.type.startsWith("image/")) {
 			throw new Error("Please select an image file.");
-		}
-		// TODO: Should adjust the position of profileID validation
-		if (!profileID) {
-			throw new Error("Please enter a Profile ID first.");
 		}
 	};
 
@@ -150,7 +147,7 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				id="fileInput"
 			/>
 
-			<button
+			<Button
 				onClick={() => document.getElementById("fileInput").click()}
 				disabled={isUploading}
 				style={{
@@ -165,7 +162,7 @@ const DragDrop = ({ profileID, onUploadSuccess }) => {
 				}}
 			>
 				{isUploading ? "Uploading..." : "Select an Image"}
-			</button>
+			</Button>
 
 			<Snackbar
 				open={!!uploadStatus.message}

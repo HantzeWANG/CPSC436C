@@ -49,24 +49,30 @@
 	transform: scale(1.1);
 }
 
-.sidenav-footer {
+#signout-button {
     position: absolute;
-    bottom: 20px;
+    bottom: 5px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: right;
     border: none;
     background: transparent;
-    font-size: 16px;
-    color: white;
+    font-size: 30px;
     box-sizing: border-box;
     text-align: left;
+	color: rgba(255, 255, 255, 0.85);
 }
 
-.sidenav-footer:hover {
-	background-color: rgba(255, 255, 255, 0.2);
-	border-radius: 0;
+#signout-button:hover svg {
+	opacity: 1;
+	transform: scale(1.1);
+}
+
+#signout-button.hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: white;
+	transform: translateX(4px);
 }
   
 .sidenav-list a {
