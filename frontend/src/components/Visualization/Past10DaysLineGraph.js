@@ -151,7 +151,7 @@ const Past10DaysLineGraph = ({ attendanceData, profileCount }) => {
             .attr("x", -height / 2)
             .style("text-anchor", "middle")
             .style("font-size", "14px")
-            .text("Count");
+            .text("Number of Individuals");
 
         // Add Legend
         const legendGroup = svg.append("g").attr("transform", `translate(${margin.left + 20}, ${margin.top})`);
