@@ -162,7 +162,7 @@ const MonthlyHeatMap = ({ attendanceData }) => {
 
     return (
         <div>
-            <h2>Current Month Overview</h2>
+            <h2>Heatmap of Attendance for the Current Month</h2>
             <svg ref={svgRef}></svg>
         </div>
     );
