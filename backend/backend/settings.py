@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',  # Localhost for local development
     'localhost',  # Localhost
-    'cpsc-436-minq4o3p3-biyhw9s-projects.vercel.app',  # Your Vercel domain
+    'cpsc-436-c-git-ci-heroku-biyhw9s-projects.vercel.app'
 ]
 
 
