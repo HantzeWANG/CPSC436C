@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',  # For local development
     'localhost',
-    'https://cpsc-436-c-git-ci-heroku-biyhw9s-projects.vercel.app/',  # Your backend URL
+    'cpsc-436-c-git-ci-heroku-biyhw9s-projects.vercel.app',  # Your backend URL
     'https://cpsc-436-c-ptfm.vercel.app',  # Replace with your actual frontend domain
 ]
 
