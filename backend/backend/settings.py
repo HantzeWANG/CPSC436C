@@ -80,15 +80,20 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cpsc436c-project',
-        'USER': 'admin',
-        'PASSWORD': '12345678',
-        'HOST': 'cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com',
-        'PORT': '3306',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",  # Keep this as django.db.backends.mysql
+        "NAME": "cpsc436c-project",
+        "USER": "admin",
+        "PASSWORD": "12345678",
+        "HOST": "cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com",
+        "PORT": "3306",
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
+        },
     }
 }
+
+
 
 
 # Password validation
