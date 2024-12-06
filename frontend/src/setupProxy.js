@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: "http://127.0.0.1:8000",
+      target: "https://cpsc-436-c-git-ci-heroku-biyhw9s-projects.vercel.app",
       changeOrigin: true,
     })
   );

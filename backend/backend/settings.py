@@ -28,9 +28,10 @@ SECRET_KEY = 'django-insecure-b-d*g*$89qe#&j-8lo#dh9(4pji&$&s8d2(nfkgk6-rp#8n0cx
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',  # Localhost for local development
-    'localhost',  # Localhost
-    'cpsc-436-c-git-ci-heroku-biyhw9s-projects.vercel.app',
+    '127.0.0.1',  # For local development
+    'localhost',
+    'https://cpsc-436-c-git-ci-heroku-biyhw9s-projects.vercel.app/',  # Your backend URL
+    'https://cpsc-436-c-ptfm.vercel.app',  # Replace with your actual frontend domain
 ]
 
 
@@ -143,7 +144,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://cpsc-436-c-ptfm.vercel.app'
+    
 ]
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, '../frontend/build')]
