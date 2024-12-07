@@ -29,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'ec2-15-223-185-126.ca-central-1.compute.amazonaws.com',
+    '3.97.78.210',
 ]
 
 # Application definition
@@ -139,6 +139,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-    'http://ec2-15-223-185-126.ca-central-1.compute.amazonaws.com:3000',
+    'http://3.97.78.210:3000',
 ]
+
 
