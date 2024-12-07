@@ -16,7 +16,8 @@ RUN npm run build
 
 # Serve the build folder
 RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Change this line to listen on 0.0.0.0 instead of localhost
+CMD ["serve", "-s", "build", "-l", "tcp://0.0.0.0:3000"]
 
 # Expose the port React runs on
 EXPOSE 3000
