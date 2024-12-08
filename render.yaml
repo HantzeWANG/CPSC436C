@@ -1,9 +1,9 @@
 services:
   - type: web
     name: attendance-capturer-backend
-    rootDir: backend
     env: python
-    buildCommand: pip install -r requirements.txt
+    rootDir: backend
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn backend.wsgi:application
     envVars:
       - key: PYTHON_VERSION
