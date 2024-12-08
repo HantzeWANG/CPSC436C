@@ -10,3 +10,5 @@ services:
         value: 3.8.0
       - key: DJANGO_SETTINGS_MODULE
         value: backend.settings
+      - key: DATABASE_URL
+        value: mysql://admin:12345678@cpsc436c.cry40y2ummvx.ca-central-1.rds.amazonaws.com:3306/cpsc436c-project
