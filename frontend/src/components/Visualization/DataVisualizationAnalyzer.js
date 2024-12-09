@@ -3,7 +3,7 @@ import { getUserId } from "../../services/profilepics";
 import MonthlyHeatMap from "./MonthlyHeatMap";
 import AttendancePercentagePieChart from "./AttendancePercentagePieChart";
 import Past10DaysLineGraph from "./Past10DaysLineGraph";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Alert } from "@mui/material";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
