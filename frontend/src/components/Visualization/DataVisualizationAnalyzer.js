@@ -115,11 +115,10 @@ const DataVisualizationAnalyzer = () => {
 
 	return (
 		<div style={containerStyle}>
-			<Box sx={{ height: 400, width: "100%", marginTop: "20px" }}>
+			<Box sx={{ height: 400, width: "100%" }}>
 				{Object.keys(dataGroupByDate).length === 0 ? (
-					<Alert severity="info">
-						No attendance data available. Please add attendance data to display
-						analysis.
+					<Alert severity="info" sx={{ marginTop: "20px" }}>
+						No attendance data for the selected date.
 					</Alert>
 				) : (
 					<div>
