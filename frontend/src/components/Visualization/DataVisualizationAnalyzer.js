@@ -3,7 +3,7 @@ import { getUserId } from "../../services/profilepics";
 import MonthlyHeatMap from "./MonthlyHeatMap";
 import AttendancePercentagePieChart from "./AttendancePercentagePieChart";
 import Past10DaysLineGraph from "./Past10DaysLineGraph";
-import { CircularProgress, Box, Alert } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -113,34 +113,30 @@ const DataVisualizationAnalyzer = () => {
 		return <div>Error: {error}</div>;
 	}
 
+	if (dataGroupByDate === null || Object.keys(dataGroupByDate).length === 0) {
+		return (
+			<Alert severity="info">
+				No attendance data found. Please add attendance data to show analysis.
+			</Alert>
+		);
+	}
+
 	return (
 		<div style={containerStyle}>
-			<Box sx={{ height: 400, width: "100%" }}>
-				{Object.keys(dataGroupByDate).length === 0 ? (
-					<Alert severity="info" sx={{ marginTop: "20px" }}>
-						No attendance data for the selected date.
-					</Alert>
-				) : (
-					<div>
-						<div style={monthlyHeatMapStyle}>
-							<MonthlyHeatMap attendanceData={dataGroupByDate} />
-						</div>
-						<div style={rowStyle}>
-							<div style={chartContainerStyle}>
-								<Past10DaysLineGraph
-									attendanceData={dataGroupByDate}
-									profileCount={profiles.length}
-								/>
-							</div>
-							<div style={chartContainerStyle}>
-								<AttendancePercentagePieChart
-									attendanceData={dataGroupByDate}
-								/>
-							</div>
-						</div>
-					</div>
-				)}
-			</Box>
+			<div style={monthlyHeatMapStyle}>
+				<MonthlyHeatMap attendanceData={dataGroupByDate} />
+			</div>
+			<div style={rowStyle}>
+				<div style={chartContainerStyle}>
+					<Past10DaysLineGraph
+						attendanceData={dataGroupByDate}
+						profileCount={profiles.length}
+					/>
+				</div>
+				<div style={chartContainerStyle}>
+					<AttendancePercentagePieChart attendanceData={dataGroupByDate} />
+				</div>
+			</div>
 		</div>
 	);
 };
