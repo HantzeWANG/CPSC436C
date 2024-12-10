@@ -29,8 +29,10 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    '3.97.78.210',
+    '3.97.78.210',  # EC2 Public IP
+    'cpsc436c2024group6.com',  # Your domain
 ]
+
 
 # Application definition
 
@@ -140,6 +142,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
     'http://3.97.78.210:3000',
+    'https://cpsc436c2024group6.com',
+    'https://www.cpsc436c2024group6.com',
 ]
 
 

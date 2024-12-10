@@ -4,8 +4,9 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: "http://3.97.78.210:8000",
+      target: "https://cpsc436c2024group6.com",
       changeOrigin: true,
+      secure: true // Enable this for HTTPS
     })
   );
 };

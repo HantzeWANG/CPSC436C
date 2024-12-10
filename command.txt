@@ -1,0 +1,20 @@
+docker buildx build --platform linux/amd64 -t hanzew25/project-backend:latest ./backend
+docker push hanzew25/project-backend:latest
+
+
+docker buildx build --platform linux/amd64 -t hanzew25/project-frontend:latest ./frontend
+docker push hanzew25/project-frontend:latest
+
+sudo docker stop frontend-container
+sudo docker rm frontend-container
+sudo docker pull hanzew25/project-frontend:latest
+sudo docker run -d --name frontend-container -p 80:3000 hanzew25/project-frontend:latest
+
+
+sudo docker stop backend-container
+
+sudo docker rm backend-container
+
+sudo docker pull hanzew25/project-backend:latest
+
+sudo docker run -d --name backend-container -p 8000:8000 hanzew25/project-backend:latest
