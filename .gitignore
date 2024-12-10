@@ -29,3 +29,5 @@ frontend/.DS_Store
 *.log
 
 Thumbs.db
+
+render.yaml
